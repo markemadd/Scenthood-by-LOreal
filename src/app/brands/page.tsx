@@ -1,48 +1,93 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useRef } from "react";
+import { motion, useInView } from "framer-motion";
 import Link from "next/link";
 import BottomNav from "@/components/BottomNav";
 import { lorealLuxeBrands, accordVotes, pilotBrands } from "@/lib/data";
+
+const fi = (id: number) => `https://fimgs.net/mdimg/perfume/375x500.${id}.jpg`;
+
+// Featured bottle image IDs for known L'Oréal Luxe brands
+const BRAND_BOTTLE: Record<string, number> = {
+  "YSL Beauté":              57987,
+  "Lancôme":                 21780,
+  "Giorgio Armani":          25564,
+  "Valentino Beauty":        59718,
+  "Prada Beauty":            76382,
+  "Maison Margiela Replica": 32268,
+  "Viktor&Rolf":             57031,  // Sì Passione stand-in
+  "Mugler":                  33290,  // gourmand stand-in
+};
+
+function Reveal({ children, delay = 0, className }: { children: React.ReactNode; delay?: number; className?: string }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-50px" });
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 24 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 const CATEGORIES = ["All", "iconic", "maison", "prestige"] as const;
 type Category = typeof CATEGORIES[number];
 
 function BrandCard({ brand, i }: { brand: typeof lorealLuxeBrands[number]; i: number }) {
-  const [hovered, setHovered] = useState(false);
+  const bottleId = BRAND_BOTTLE[brand.name];
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: i * 0.05 }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      className="border border-loreal-border bg-white cursor-default transition-all duration-200 hover:border-loreal-champagne/60"
-    >
-      <div className="p-5">
-        <div className="flex items-start justify-between mb-3">
-          <span className="text-2xl">{brand.icon}</span>
-          <span className="text-[9px] tracking-[0.1em] uppercase border border-loreal-border px-2 py-0.5 text-loreal-muted">
-            {brand.category}
-          </span>
-        </div>
-        <h3 className="font-serif text-base font-light text-loreal-charcoal mb-1">{brand.name}</h3>
-        <p className="text-[11px] italic text-loreal-muted mb-3">&ldquo;{brand.tagline}&rdquo;</p>
-        <div className="divider-full mb-3" />
-        <div className="flex justify-between items-center">
-          <div>
-            <div className="text-[9px] uppercase tracking-[0.1em] text-loreal-muted mb-0.5">Featured</div>
-            <div className="text-[12px] text-loreal-charcoal font-medium">{brand.topFragrance}</div>
+    <Reveal delay={i * 0.045}>
+      <motion.div
+        whileHover={{ y: -4, borderColor: "rgba(164,139,117,0.55)" }}
+        transition={{ duration: 0.25 }}
+        className="border border-loreal-border bg-white cursor-default group"
+      >
+        {/* Bottle image or icon */}
+        {bottleId ? (
+          <div className="bg-loreal-cream/30 border-b border-loreal-border flex items-center justify-center p-4 h-36 overflow-hidden">
+            <img
+              src={fi(bottleId)}
+              alt={brand.name}
+              className="h-28 w-auto object-contain transition-transform duration-500 group-hover:scale-105"
+              loading="lazy"
+            />
           </div>
-          <div className="text-right">
-            <div className="text-[9px] uppercase tracking-[0.1em] text-loreal-muted mb-0.5">Family</div>
-            <div className="text-[11px] champagne-text font-medium">{brand.family}</div>
+        ) : (
+          <div className="bg-loreal-cream/20 border-b border-loreal-border flex items-center justify-center h-36">
+            <span className="text-4xl opacity-30">{brand.icon}</span>
+          </div>
+        )}
+
+        <div className="p-5">
+          <div className="flex items-start justify-between mb-2">
+            {!bottleId && <span className="text-xl">{brand.icon}</span>}
+            <span className="text-[9px] tracking-[0.1em] uppercase border border-loreal-border px-2 py-0.5 text-loreal-muted ml-auto">
+              {brand.category}
+            </span>
+          </div>
+          <h3 className="font-serif text-base font-light text-loreal-charcoal mb-1">{brand.name}</h3>
+          <p className="text-[11px] italic text-loreal-muted mb-3">&ldquo;{brand.tagline}&rdquo;</p>
+          <div className="divider-full mb-3" />
+          <div className="flex justify-between items-center">
+            <div>
+              <div className="text-[9px] uppercase tracking-[0.1em] text-loreal-muted mb-0.5">Featured</div>
+              <div className="text-[12px] text-loreal-charcoal font-medium">{brand.topFragrance}</div>
+            </div>
+            <div className="text-right">
+              <div className="text-[9px] uppercase tracking-[0.1em] text-loreal-muted mb-0.5">Family</div>
+              <div className="text-[11px] champagne-text font-medium">{brand.family}</div>
+            </div>
           </div>
         </div>
-      </div>
-    </motion.div>
+      </motion.div>
+    </Reveal>
   );
 }
 
@@ -115,52 +160,72 @@ export default function BrandsPage() {
         <div className="grid md:grid-cols-2 gap-4">
           {pilotBrands.map((brand, i) => {
             const relatedVote = accordVotes[i];
+            const bottleId = i === 0 ? 57987 : 59718; // YSL Libre / Valentino Born in Roma
             return (
-              <div key={brand.name} className="border border-loreal-border bg-white">
-                <div className="h-0.5 bg-champagne-gradient" />
-                <div className="p-6">
-                  <div className="eyebrow mb-2">{brand.timeline}</div>
-                  <h3 className="heading-sm mb-3">{brand.name}</h3>
-                  <p className="body-sm mb-4">{brand.tagline}</p>
+              <Reveal key={brand.name} delay={i * 0.12}>
+                <motion.div
+                  whileHover={{ borderColor: "rgba(164,139,117,0.5)" }}
+                  transition={{ duration: 0.25 }}
+                  className="border border-loreal-border bg-white group"
+                >
+                  <div className="h-0.5 bg-champagne-gradient" />
 
-                  <div className="grid grid-cols-3 gap-2 mb-4">
-                    {brand.targets.map((target) => {
-                      const [num, ...rest] = target.split(" ");
-                      return (
-                        <div key={target} className="border border-loreal-border p-2 text-center">
-                          <div className="font-serif text-sm champagne-text font-light">{num}</div>
-                          <div className="text-[9px] text-loreal-muted leading-tight">{rest.join(" ")}</div>
-                        </div>
-                      );
-                    })}
+                  {/* Hero bottle display */}
+                  <div className="bg-loreal-cream/20 border-b border-loreal-border flex items-center justify-center p-6 h-48 relative overflow-hidden">
+                    <motion.img
+                      src={fi(bottleId)}
+                      alt={brand.name}
+                      className="h-36 w-auto object-contain drop-shadow-xl"
+                      whileHover={{ y: -6, rotate: -3 }}
+                      transition={{ duration: 0.35 }}
+                      loading="lazy"
+                    />
                   </div>
 
-                  {relatedVote && (
-                    <div className="border border-loreal-border p-3">
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                        <span className="text-[9px] uppercase tracking-[0.1em] text-green-700 font-medium">Live vote</span>
-                        <span className="text-[10px] text-loreal-muted">· {relatedVote.totalVotes.toLocaleString()} votes</span>
-                      </div>
-                      <div className="text-xs font-medium text-loreal-charcoal mb-2">{relatedVote.title}</div>
-                      <Link href="/vote" className="text-[10px] champagne-text hover:text-loreal-gold transition-colors font-medium">
-                        Cast your vote →
-                      </Link>
-                    </div>
-                  )}
+                  <div className="p-6">
+                    <div className="eyebrow mb-2">{brand.timeline}</div>
+                    <h3 className="heading-sm mb-3">{brand.name}</h3>
+                    <p className="body-sm mb-4">{brand.tagline}</p>
 
-                  {brand.editions && brand.editions.length > 0 && (
-                    <div className="mt-3">
-                      <div className="text-[9px] uppercase tracking-[0.1em] text-loreal-muted mb-2">Community Editions</div>
-                      <div className="flex flex-wrap gap-1.5">
-                        {brand.editions.map((ed) => (
-                          <span key={ed} className="text-[10px] border border-loreal-border px-2 py-0.5 text-loreal-slate">{ed}</span>
-                        ))}
-                      </div>
+                    <div className="grid grid-cols-3 gap-2 mb-4">
+                      {brand.targets.map((target) => {
+                        const [num, ...rest] = target.split(" ");
+                        return (
+                          <div key={target} className="border border-loreal-border p-2 text-center">
+                            <div className="font-serif text-sm champagne-text font-light">{num}</div>
+                            <div className="text-[9px] text-loreal-muted leading-tight">{rest.join(" ")}</div>
+                          </div>
+                        );
+                      })}
                     </div>
-                  )}
-                </div>
-              </div>
+
+                    {relatedVote && (
+                      <div className="border border-loreal-border p-3">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                          <span className="text-[9px] uppercase tracking-[0.1em] text-green-700 font-medium">Live vote</span>
+                          <span className="text-[10px] text-loreal-muted">· {relatedVote.totalVotes.toLocaleString()} votes</span>
+                        </div>
+                        <div className="text-xs font-medium text-loreal-charcoal mb-2">{relatedVote.title}</div>
+                        <Link href="/vote" className="text-[10px] champagne-text hover:text-loreal-gold transition-colors font-medium">
+                          Cast your vote →
+                        </Link>
+                      </div>
+                    )}
+
+                    {brand.editions && brand.editions.length > 0 && (
+                      <div className="mt-3">
+                        <div className="text-[9px] uppercase tracking-[0.1em] text-loreal-muted mb-2">Community Editions</div>
+                        <div className="flex flex-wrap gap-1.5">
+                          {brand.editions.map((ed) => (
+                            <span key={ed} className="text-[10px] border border-loreal-border px-2 py-0.5 text-loreal-slate">{ed}</span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              </Reveal>
             );
           })}
         </div>

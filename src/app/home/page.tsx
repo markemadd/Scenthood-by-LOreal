@@ -7,7 +7,18 @@ import BottomNav from "@/components/BottomNav";
 import TierBadge from "@/components/TierBadge";
 import { reviews, accordVotes, communityStats } from "@/lib/data";
 
-// Gradient palettes for review photo placeholders
+const fi = (id: number) => `https://fimgs.net/mdimg/perfume/375x500.${id}.jpg`;
+
+// Maps a fragrance name to a trio of bottle image IDs to show in the photo strip
+const REVIEW_BOTTLE_IDS: Record<string, [number, number, number]> = {
+  "Replica Jazz Club":         [32268, 37834, 36460],
+  "YSL Libre":                 [57987, 33290, 49773],
+  "Replica By The Fireplace":  [36460, 32268, 26977],
+  "Armani Privé Bois d'Encens":[4083,  57037, 25564],
+  "Lancôme La Vie Est Belle":  [21780, 63067, 3001],
+};
+
+// Gradient palettes for review photo placeholders (fallback)
 const REVIEW_GRADIENTS = [
   "from-[#C9A96E] to-[#8A7362]",
   "from-[#D4A5A5] to-[#9E5A5A]",
@@ -217,14 +228,36 @@ export default function HomePage() {
                     &ldquo;{review.excerpt.substring(0, 140)}...&rdquo;
                   </p>
 
-                  {/* Scent photo strip placeholder */}
+                  {/* Scent photo strip — real bottle images when available, gradient fallback */}
                   <div className="flex gap-1.5">
-                    {[0, 1, 2].map((j) => (
-                      <motion.div key={j} whileHover={{ scale: 1.05 }}
-                        className={`w-14 h-14 bg-gradient-to-br ${REVIEW_GRADIENTS[(i + j) % REVIEW_GRADIENTS.length]} flex items-center justify-center cursor-zoom-in`}>
-                        <span className="text-white/40 text-lg">✦</span>
-                      </motion.div>
-                    ))}
+                    {(() => {
+                      const bottles = REVIEW_BOTTLE_IDS[review.fragranceName];
+                      if (bottles) {
+                        return bottles.map((id, j) => (
+                          <motion.div
+                            key={id}
+                            whileHover={{ scale: 1.05, y: -2 }}
+                            className="w-14 h-14 bg-loreal-cream/50 border border-loreal-border flex items-center justify-center cursor-zoom-in overflow-hidden hover:border-loreal-champagne/50 transition-colors"
+                          >
+                            <img
+                              src={fi(id)}
+                              alt=""
+                              className="h-12 w-auto object-contain"
+                              loading="lazy"
+                            />
+                          </motion.div>
+                        ));
+                      }
+                      return [0, 1, 2].map((j) => (
+                        <motion.div
+                          key={j}
+                          whileHover={{ scale: 1.05 }}
+                          className={`w-14 h-14 bg-gradient-to-br ${REVIEW_GRADIENTS[(i + j) % REVIEW_GRADIENTS.length]} flex items-center justify-center cursor-zoom-in`}
+                        >
+                          <span className="text-white/40 text-lg">✦</span>
+                        </motion.div>
+                      ));
+                    })()}
                     <div className="w-14 h-14 bg-loreal-sand/40 border border-loreal-border flex items-center justify-center">
                       <span className="text-[9px] text-loreal-muted text-center leading-tight px-1">+{review.upvotes} likes</span>
                     </div>
