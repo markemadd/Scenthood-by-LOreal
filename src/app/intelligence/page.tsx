@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef } from "react";
+import Image from "next/image";
 import BottomNav from "@/components/BottomNav";
 import { intelligenceData } from "@/lib/data";
 
@@ -272,33 +273,170 @@ export default function IntelligencePage() {
   const [activeTab, setActiveTab] = useState<"rising" | "declining">("rising");
 
   return (
-    <main className="min-h-screen bg-loreal-white pb-20 md:pb-0 pt-14">
+    <main className="min-h-screen bg-scent-parchment pb-28 md:pb-0">
       <BottomNav />
 
-      {/* Dark header */}
-      <div className="bg-loreal-charcoal text-white border-b border-white/10">
-        <div className="max-w-5xl mx-auto px-5 py-6 flex items-end justify-between flex-wrap gap-4">
-          <div>
-            <div className="text-xs tracking-[0.25em] uppercase text-loreal-champagne mb-1.5 font-medium">L&apos;Oréal Luxe · Internal</div>
-            <h1 className="font-serif text-3xl font-light text-white">SCENTHOOD Intelligence</h1>
-            <p className="text-white/60 text-sm mt-1.5">Community analytics &amp; strategic foresight</p>
-          </div>
-          <div className="flex gap-3">
+      {/* === HERO === */}
+      <section className="relative min-h-[60vh] w-full overflow-hidden bg-scent-noir grain">
+        <div className="absolute inset-0 opacity-40">
+          <Image src="/assets/ysl-myslf.jpg" alt="" fill className="object-cover object-center" sizes="100vw" />
+          <div className="absolute inset-0 bg-gradient-to-b from-scent-noir/60 via-scent-noir/70 to-scent-noir" />
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-5 md:px-12 pt-32 pb-12 md:pb-16">
+          <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+            <div className="eyebrow text-scent-gold mb-4">L&apos;Oréal Luxe · Internal</div>
+          </motion.div>
+          <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="display-hero text-scent-parchment leading-none">
+            Intelligence
+          </motion.h1>
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }}
+            className="mt-5 max-w-xl text-scent-parchment/85 text-base md:text-lg">
+            Community analytics &amp; strategic foresight. The signal beneath the brief.
+          </motion.p>
+
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.1 }}
+            className="mt-10 grid grid-cols-3 gap-3 max-w-2xl">
             {[
               { label: "Retention",     val: `${retentionRate}%` },
               { label: "Weekly Active", val: `${weeklyActiveRate}%` },
               { label: "Avg LIS",       val: avgCCSPerMember },
             ].map((kpi) => (
-              <div key={kpi.label} className="border border-white/25 px-4 py-2.5 text-center min-w-[72px]">
-                <div className="font-serif text-xl text-loreal-champagne leading-none">{kpi.val}</div>
-                <div className="text-xs text-white/80 uppercase tracking-wide mt-1 font-medium">{kpi.label}</div>
+              <div key={kpi.label} className="border border-scent-parchment/25 px-4 py-3 text-center">
+                <div className="font-display text-2xl text-scent-gold leading-none">{kpi.val}</div>
+                <div className="text-[10px] text-scent-parchment/75 uppercase tracking-[0.18em] mt-1.5 font-bold">{kpi.label}</div>
               </div>
             ))}
-          </div>
+          </motion.div>
         </div>
-      </div>
+      </section>
 
       <div className="max-w-5xl mx-auto px-5 py-6 space-y-5">
+
+        {/* ── STRATEGIC RECOMMENDATIONS (moved to top) ── */}
+        <InViewSection delay={0.1}>
+          <div className="border border-loreal-border bg-white">
+            <div className="border-b border-loreal-border px-6 py-4">
+              <SectionLabel>Strategic Recommendations</SectionLabel>
+              <div className="font-serif text-xl text-loreal-charcoal font-light">Where to Direct R&amp;D &amp; Community Energy</div>
+            </div>
+            <div className="divide-y divide-loreal-border">
+              {SCENT_FOCUS.map((rec, i) => (
+                <motion.div key={rec.priority} initial={{ opacity: 0, x: -12 }} whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }} transition={{ delay: i * 0.08, duration: 0.45 }}
+                  className="p-6 flex gap-5 hover:bg-loreal-cream/25 transition-colors group">
+                  <div className="flex-shrink-0 w-10 text-center pt-0.5">
+                    <div className="font-serif text-2xl font-light champagne-text leading-none">{rec.priority}</div>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-3 mb-2 flex-wrap">
+                      <div className="text-base font-bold text-loreal-charcoal">{rec.label}</div>
+                      <div className="flex gap-2">
+                        <span className={`text-xs uppercase tracking-[0.1em] px-2.5 py-1 font-bold border ${
+                          rec.impact === "High"
+                            ? "border-emerald-400 text-emerald-700 bg-emerald-50"
+                            : "border-loreal-champagne/60 text-loreal-champagne bg-loreal-cream/60"
+                        }`}>{rec.impact}</span>
+                        <span className="text-xs uppercase tracking-[0.1em] px-2.5 py-1 border border-loreal-border text-loreal-slate font-semibold">{rec.timeframe}</span>
+                      </div>
+                    </div>
+                    <p className="text-sm text-loreal-slate leading-relaxed mb-3">{rec.rationale}</p>
+                    <div className="flex items-start gap-2.5 p-3 bg-loreal-cream border-l-2 border-loreal-champagne">
+                      <span className="text-loreal-champagne text-sm flex-shrink-0 mt-0.5 font-bold">→</span>
+                      <span className="text-sm text-loreal-charcoal font-semibold leading-snug">{rec.action}</span>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </InViewSection>
+
+        {/* ── TREND FORECAST (moved to top) ── */}
+        <InViewSection delay={0.05}>
+          <div className="border border-loreal-border bg-white">
+            <div className="border-b border-loreal-border px-6 py-4 flex items-center justify-between flex-wrap gap-3">
+              <div>
+                <SectionLabel>Trend Forecast</SectionLabel>
+                <div className="font-serif text-xl text-loreal-charcoal font-light">Accord Momentum — Next 12 Months</div>
+              </div>
+              <div className="flex border border-loreal-border">
+                {(["rising", "declining"] as const).map((tab) => (
+                  <button key={tab} onClick={() => setActiveTab(tab)}
+                    className={`px-5 py-2.5 text-xs uppercase tracking-[0.12em] font-bold transition-all ${
+                      activeTab === tab ? "bg-loreal-charcoal text-white" : "bg-white text-loreal-slate hover:text-loreal-charcoal"
+                    }`}>
+                    {tab === "rising" ? "↑ Rising" : "↓ Declining"}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <AnimatePresence mode="wait">
+              {activeTab === "rising" ? (
+                <motion.div key="rising" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.3 }} className="p-5 space-y-3">
+                  {TREND_FORECAST.rising.map((t, i) => (
+                    <motion.div key={t.accord} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.07 }}
+                      className="flex gap-4 p-4 border border-loreal-border hover:border-loreal-champagne/60 hover:bg-loreal-cream/20 transition-all group">
+                      <div className="flex-shrink-0 w-14 text-center">
+                        <div className="font-serif text-3xl font-light champagne-text leading-none">{t.momentum}</div>
+                        <div className="text-xs text-loreal-slate font-medium mt-0.5">score</div>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-2 mb-1.5 flex-wrap">
+                          <div className="text-sm font-bold text-loreal-charcoal">{t.accord}</div>
+                          <div className="text-xs text-emerald-600 font-semibold whitespace-nowrap">{t.horizon}</div>
+                        </div>
+                        <div className="text-sm text-loreal-slate mb-2.5">{t.driver}</div>
+                        <div className="flex flex-wrap gap-1.5">
+                          {t.brands.map((b) => (
+                            <span key={b} className="text-xs uppercase tracking-[0.1em] px-2.5 py-0.5 border border-loreal-champagne/50 text-loreal-champagne font-semibold">
+                              {b}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="w-2 self-stretch bg-loreal-border overflow-hidden flex-shrink-0">
+                        <motion.div className="w-full bg-loreal-champagne" initial={{ height: 0 }}
+                          animate={{ height: `${t.momentum}%` }}
+                          transition={{ duration: 0.8, delay: i * 0.07 + 0.2, ease: "easeOut" }}
+                          style={{ marginTop: `${100 - t.momentum}%` }} />
+                      </div>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              ) : (
+                <motion.div key="declining" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.3 }} className="p-5 space-y-3">
+                  {TREND_FORECAST.declining.map((t, i) => (
+                    <motion.div key={t.accord} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.07 }}
+                      className="flex gap-4 p-4 border border-loreal-border">
+                      <div className="flex-shrink-0 w-14 text-center">
+                        <div className="font-serif text-3xl font-light leading-none" style={{ color: "#e74c3c" }}>{t.drop}%</div>
+                        <div className="text-xs text-loreal-slate font-medium mt-0.5">YoY</div>
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-sm font-bold text-loreal-charcoal mb-1.5">{t.accord}</div>
+                        <div className="text-sm text-loreal-slate">{t.reason}</div>
+                      </div>
+                    </motion.div>
+                  ))}
+                  <div className="p-4 bg-loreal-cream border border-loreal-champagne/40">
+                    <div className="text-xs font-bold text-loreal-charcoal mb-1.5">Strategic Note</div>
+                    <div className="text-sm text-loreal-slate leading-relaxed">
+                      Declining accords signal an opportunity to reinterpret rather than abandon — lighter, fresher iterations are gaining traction in SCENTHOOD data.
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </InViewSection>
 
         {/* ── KPI CARDS ── */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -477,129 +615,6 @@ export default function IntelligencePage() {
                       className="h-full" style={{ background: heatColor(r.intensity) }} />
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        </InViewSection>
-
-        {/* ── TREND FORECAST ── */}
-        <InViewSection delay={0.05}>
-          <div className="border border-loreal-border bg-white">
-            <div className="border-b border-loreal-border px-6 py-4 flex items-center justify-between flex-wrap gap-3">
-              <div>
-                <SectionLabel>Trend Forecast</SectionLabel>
-                <div className="font-serif text-xl text-loreal-charcoal font-light">Accord Momentum — Next 12 Months</div>
-              </div>
-              <div className="flex border border-loreal-border">
-                {(["rising", "declining"] as const).map((tab) => (
-                  <button key={tab} onClick={() => setActiveTab(tab)}
-                    className={`px-5 py-2.5 text-xs uppercase tracking-[0.12em] font-bold transition-all ${
-                      activeTab === tab ? "bg-loreal-charcoal text-white" : "bg-white text-loreal-slate hover:text-loreal-charcoal"
-                    }`}>
-                    {tab === "rising" ? "↑ Rising" : "↓ Declining"}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <AnimatePresence mode="wait">
-              {activeTab === "rising" ? (
-                <motion.div key="rising" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.3 }} className="p-5 space-y-3">
-                  {TREND_FORECAST.rising.map((t, i) => (
-                    <motion.div key={t.accord} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.07 }}
-                      className="flex gap-4 p-4 border border-loreal-border hover:border-loreal-champagne/60 hover:bg-loreal-cream/20 transition-all group">
-                      <div className="flex-shrink-0 w-14 text-center">
-                        <div className="font-serif text-3xl font-light champagne-text leading-none">{t.momentum}</div>
-                        <div className="text-xs text-loreal-slate font-medium mt-0.5">score</div>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-2 mb-1.5 flex-wrap">
-                          <div className="text-sm font-bold text-loreal-charcoal">{t.accord}</div>
-                          <div className="text-xs text-emerald-600 font-semibold whitespace-nowrap">{t.horizon}</div>
-                        </div>
-                        <div className="text-sm text-loreal-slate mb-2.5">{t.driver}</div>
-                        <div className="flex flex-wrap gap-1.5">
-                          {t.brands.map((b) => (
-                            <span key={b} className="text-xs uppercase tracking-[0.1em] px-2.5 py-0.5 border border-loreal-champagne/50 text-loreal-champagne font-semibold">
-                              {b}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                      <div className="w-2 self-stretch bg-loreal-border overflow-hidden flex-shrink-0">
-                        <motion.div className="w-full bg-loreal-champagne" initial={{ height: 0 }}
-                          animate={{ height: `${t.momentum}%` }}
-                          transition={{ duration: 0.8, delay: i * 0.07 + 0.2, ease: "easeOut" }}
-                          style={{ marginTop: `${100 - t.momentum}%` }} />
-                      </div>
-                    </motion.div>
-                  ))}
-                </motion.div>
-              ) : (
-                <motion.div key="declining" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.3 }} className="p-5 space-y-3">
-                  {TREND_FORECAST.declining.map((t, i) => (
-                    <motion.div key={t.accord} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.07 }}
-                      className="flex gap-4 p-4 border border-loreal-border">
-                      <div className="flex-shrink-0 w-14 text-center">
-                        <div className="font-serif text-3xl font-light leading-none" style={{ color: "#e74c3c" }}>{t.drop}%</div>
-                        <div className="text-xs text-loreal-slate font-medium mt-0.5">YoY</div>
-                      </div>
-                      <div className="flex-1">
-                        <div className="text-sm font-bold text-loreal-charcoal mb-1.5">{t.accord}</div>
-                        <div className="text-sm text-loreal-slate">{t.reason}</div>
-                      </div>
-                    </motion.div>
-                  ))}
-                  <div className="p-4 bg-loreal-cream border border-loreal-champagne/40">
-                    <div className="text-xs font-bold text-loreal-charcoal mb-1.5">Strategic Note</div>
-                    <div className="text-sm text-loreal-slate leading-relaxed">
-                      Declining accords signal an opportunity to reinterpret rather than abandon — lighter, fresher iterations are gaining traction in SCENTHOOD data.
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </InViewSection>
-
-        {/* ── SCENT FOCUS RECOMMENDATIONS ── */}
-        <InViewSection delay={0.1}>
-          <div className="border border-loreal-border bg-white">
-            <div className="border-b border-loreal-border px-6 py-4">
-              <SectionLabel>Strategic Recommendations</SectionLabel>
-              <div className="font-serif text-xl text-loreal-charcoal font-light">Where to Direct R&amp;D &amp; Community Energy</div>
-            </div>
-            <div className="divide-y divide-loreal-border">
-              {SCENT_FOCUS.map((rec, i) => (
-                <motion.div key={rec.priority} initial={{ opacity: 0, x: -12 }} whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }} transition={{ delay: i * 0.08, duration: 0.45 }}
-                  className="p-6 flex gap-5 hover:bg-loreal-cream/25 transition-colors group">
-                  <div className="flex-shrink-0 w-10 text-center pt-0.5">
-                    <div className="font-serif text-2xl font-light champagne-text leading-none">{rec.priority}</div>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-3 mb-2 flex-wrap">
-                      <div className="text-base font-bold text-loreal-charcoal">{rec.label}</div>
-                      <div className="flex gap-2">
-                        <span className={`text-xs uppercase tracking-[0.1em] px-2.5 py-1 font-bold border ${
-                          rec.impact === "High"
-                            ? "border-emerald-400 text-emerald-700 bg-emerald-50"
-                            : "border-loreal-champagne/60 text-loreal-champagne bg-loreal-cream/60"
-                        }`}>{rec.impact}</span>
-                        <span className="text-xs uppercase tracking-[0.1em] px-2.5 py-1 border border-loreal-border text-loreal-slate font-semibold">{rec.timeframe}</span>
-                      </div>
-                    </div>
-                    <p className="text-sm text-loreal-slate leading-relaxed mb-3">{rec.rationale}</p>
-                    <div className="flex items-start gap-2.5 p-3 bg-loreal-cream border-l-2 border-loreal-champagne">
-                      <span className="text-loreal-champagne text-sm flex-shrink-0 mt-0.5 font-bold">→</span>
-                      <span className="text-sm text-loreal-charcoal font-semibold leading-snug">{rec.action}</span>
-                    </div>
-                  </div>
-                </motion.div>
               ))}
             </div>
           </div>

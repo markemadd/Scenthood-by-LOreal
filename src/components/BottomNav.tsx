@@ -2,71 +2,87 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 
 const navItems = [
-  { href: "/home", label: "Home", icon: "⌂" },
-  { href: "/vote", label: "Vote", icon: "◉" },
-  { href: "/community", label: "Feed", icon: "◈" },
-  { href: "/referral", label: "Refer", icon: "✦" },
-  { href: "/profile", label: "Profile", icon: "◎" },
-];
+  { href: "/home",         label: "Home",         color: "gold" },
+  { href: "/community",    label: "Community",    color: "parchment" },
+  { href: "/vote",         label: "Votes",        color: "rose" },
+  { href: "/intelligence", label: "Intelligence", color: "noir" },
+  { href: "/referral",     label: "Refer",        color: "parchment" },
+  { href: "/profile",      label: "Profile",      color: "gold" },
+] as const;
+
+function pillClass(color: string, active: boolean) {
+  const base = "pill text-[11px] px-4 py-1.5";
+  if (active) {
+    if (color === "gold")      return `${base} pill-gold`;
+    if (color === "rose")      return `${base} pill-rose`;
+    if (color === "noir")      return `${base} pill-noir`;
+    return `${base} pill-parchment`;
+  }
+  return `${base} pill-parchment opacity-70 hover:opacity-100`;
+}
 
 export default function BottomNav() {
   const pathname = usePathname();
 
   return (
     <>
-      {/* Mobile bottom nav */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-loreal-border md:hidden">
-        <div className="flex items-center justify-around max-w-lg mx-auto">
+      {/* === TOP NAV === */}
+      <motion.nav
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="fixed top-0 left-0 right-0 z-50"
+      >
+        <div className="px-4 md:px-8 pt-3 md:pt-5">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            {/* Logo mark */}
+            <Link href="/" className="flex items-center gap-2 group">
+              <div className="logo-mark group-hover:bg-scent-gold group-hover:text-scent-noir transition-colors">
+                S<span className="text-scent-gold group-hover:text-scent-noir">·</span>H
+              </div>
+            </Link>
+
+            {/* Pill nav — visible md+ */}
+            <div className="hidden md:flex items-center gap-2 bg-scent-parchment/70 backdrop-blur-md p-1.5 border-2 border-scent-noir rounded-full">
+              {navItems.map((item) => {
+                const active = pathname === item.href;
+                return (
+                  <Link key={item.href} href={item.href}
+                    className={pillClass(item.color, active)}>
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
+
+            {/* Right action */}
+            <Link href="/quiz" className="hidden md:inline-flex pill pill-noir text-[11px] px-4 py-1.5">
+              Take the Quiz
+            </Link>
+
+            {/* Mobile: condensed action */}
+            <Link href="/quiz" className="md:hidden pill pill-noir text-[10px] px-3 py-1">
+              Quiz
+            </Link>
+          </div>
+        </div>
+      </motion.nav>
+
+      {/* === MOBILE BOTTOM NAV === */}
+      <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden px-3 pb-3">
+        <div className="bg-scent-parchment/95 backdrop-blur-md border-2 border-scent-noir rounded-full p-1.5 flex items-center justify-between gap-1 overflow-x-auto no-scrollbar">
           {navItems.map((item) => {
-            const isActive = pathname === item.href;
+            const active = pathname === item.href;
             return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex flex-col items-center gap-1 py-3 px-6 transition-colors ${isActive ? "text-loreal-charcoal" : "text-loreal-muted hover:text-loreal-slate"
-                  }`}
-              >
-                <div className={`w-5 h-px mb-0.5 transition-all ${isActive ? "bg-loreal-champagne" : "bg-transparent"}`} />
-                <span className="text-[10px] tracking-[0.1em] uppercase font-medium">{item.label}</span>
+              <Link key={item.href} href={item.href}
+                className={`${pillClass(item.color, active)} flex-shrink-0`}>
+                {item.label}
               </Link>
             );
           })}
-        </div>
-      </nav>
-
-      {/* Desktop top nav bar (positioned fixed by parent pages) */}
-      <nav className="hidden md:flex fixed top-0 left-0 right-0 z-50 bg-loreal-white/95 backdrop-blur-sm border-b border-loreal-border">
-        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between w-full">
-          <Link href="/" className="font-serif text-loreal-charcoal text-lg tracking-[0.2em] font-light">
-            SCENTHOOD
-          </Link>
-          <div className="flex items-center gap-8">
-            {navItems.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`text-xs tracking-[0.12em] uppercase font-medium transition-colors pb-0.5 border-b ${isActive
-                    ? "text-loreal-charcoal border-loreal-champagne"
-                    : "text-loreal-muted border-transparent hover:text-loreal-slate"
-                    }`}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
-          </div>
-          <div className="flex items-center gap-3">
-            <Link href="/referral" className="text-xs tracking-[0.12em] uppercase font-medium text-loreal-muted hover:text-loreal-champagne transition-colors">
-              Refer &amp; Earn
-            </Link>
-            <Link href="/quiz" className="btn-outline text-xs py-1.5 px-4">
-              Join
-            </Link>
-          </div>
         </div>
       </nav>
     </>

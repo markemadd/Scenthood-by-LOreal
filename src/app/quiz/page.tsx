@@ -86,31 +86,31 @@ function ProfileStep({ gender, setGender, age, setAge, onNext }: {
   return (
     <div className="max-w-xl mx-auto w-full">
       <div className="eyebrow mb-4">About You</div>
-      <h2 className="heading-md mb-1">A few quick details</h2>
-      <p className="body-sm mb-8">Fragrance is deeply personal — your gender and age help us recommend scents created for you.</p>
+      <h2 className="display-lg text-scent-noir mb-3">A few quick details.</h2>
+      <p className="text-scent-darkOud mb-10">Fragrance is deeply personal — your gender and age help us recommend scents created for you.</p>
 
-      <div className="mb-6">
-        <div className="text-[11px] uppercase tracking-[0.12em] text-loreal-muted mb-3">I identify as</div>
+      <div className="mb-8">
+        <div className="eyebrow mb-3">I identify as</div>
         <div className="flex gap-2">
           {([{ val: "f" as Gender, label: "Woman" }, { val: "m" as Gender, label: "Man" }, { val: "n" as Gender, label: "Non-binary" }] as const).map((opt) => (
-            <motion.button key={opt.val} whileTap={{ scale: 0.97 }} onClick={() => setGender(opt.val)}
-              className={`flex-1 py-3 text-sm font-medium border transition-all ${gender === opt.val ? "border-loreal-champagne bg-loreal-cream text-loreal-charcoal" : "border-loreal-border bg-white text-loreal-muted hover:border-loreal-champagne/40"}`}>
+            <button key={opt.val} onClick={() => setGender(opt.val)}
+              className={`flex-1 py-3 text-sm font-bold border-2 border-scent-noir transition-all ${gender === opt.val ? "bg-scent-gold text-scent-noir" : "bg-scent-parchment text-scent-noir hover:bg-scent-alabaster"}`}>
               {opt.label}
-            </motion.button>
+            </button>
           ))}
         </div>
       </div>
 
-      <div className="mb-8">
-        <div className="text-[11px] uppercase tracking-[0.12em] text-loreal-muted mb-3">My age</div>
+      <div className="mb-10">
+        <div className="eyebrow mb-3">My age</div>
         <input type="number" min={13} max={100} placeholder="Enter your age" value={age} onChange={(e) => setAge(e.target.value)}
-          className="w-full border border-loreal-border px-4 py-3 text-sm text-loreal-charcoal bg-white focus:outline-none focus:border-loreal-champagne font-sans placeholder:text-loreal-muted/60" />
+          className="w-full border-2 border-scent-noir px-4 py-3 text-base text-scent-noir bg-scent-parchment focus:outline-none focus:bg-scent-alabaster font-medium placeholder:text-scent-noir/40" />
       </div>
 
-      <motion.button onClick={onNext} disabled={!canContinue} whileTap={{ scale: 0.98 }}
-        className={`btn-primary text-sm w-full ${!canContinue ? "opacity-30 cursor-not-allowed" : ""}`}>
+      <button onClick={onNext} disabled={!canContinue}
+        className={`pill pill-gold text-[12px] w-full py-3 ${!canContinue ? "opacity-30 cursor-not-allowed" : ""}`}>
         Continue →
-      </motion.button>
+      </button>
     </div>
   );
 }
@@ -308,10 +308,11 @@ export default function QuizPage() {
   // ── PROFILE STEP ──
   if (stage === "profile") {
     return (
-      <main className="min-h-screen bg-loreal-white flex flex-col">
-        <div className="border-b border-loreal-border px-5 py-4">
-          <div className="max-w-xl mx-auto">
-            <Link href="/" className="font-serif text-loreal-charcoal text-base tracking-[0.2em]">SCENTHOOD</Link>
+      <main className="min-h-screen bg-scent-parchment flex flex-col">
+        <div className="border-b-2 border-scent-noir px-5 py-4">
+          <div className="max-w-xl mx-auto flex items-center gap-3">
+            <Link href="/" className="logo-mark">S<span className="text-scent-gold">·</span>H</Link>
+            <span className="eyebrow">Scent Identity Quiz</span>
           </div>
           <div className="max-w-xl mx-auto mt-3">
             <div className="progress-rail"><div className="progress-fill" style={{ width: "0%" }} /></div>
@@ -326,11 +327,14 @@ export default function QuizPage() {
 
   // ── QUIZ STEP ──
   return (
-    <main className="min-h-screen bg-loreal-white flex flex-col">
-      <div className="border-b border-loreal-border px-5 py-4">
+    <main className="min-h-screen bg-scent-parchment flex flex-col">
+      <div className="border-b-2 border-scent-noir px-5 py-4">
         <div className="max-w-xl mx-auto flex items-center justify-between">
-          <Link href="/" className="font-serif text-loreal-charcoal text-base tracking-[0.2em]">SCENTHOOD</Link>
-          <span className="body-sm text-[11px]">{step + 1} of {quizQuestions.length}</span>
+          <div className="flex items-center gap-3">
+            <Link href="/" className="logo-mark">S<span className="text-scent-gold">·</span>H</Link>
+            <span className="eyebrow">Scent Identity Quiz</span>
+          </div>
+          <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-scent-noir">{step + 1} / {quizQuestions.length}</span>
         </div>
         <div className="max-w-xl mx-auto mt-3">
           <div className="progress-rail">
@@ -346,8 +350,8 @@ export default function QuizPage() {
             <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.35 }}>
               <div className="eyebrow mb-4">Question {step + 1}</div>
-              <h2 className="heading-md mb-1">{currentQ.question}</h2>
-              <p className="body-sm mb-8">{currentQ.hint}</p>
+              <h2 className="display-lg text-scent-noir mb-3">{currentQ.question}</h2>
+              <p className="text-scent-darkOud mb-8">{currentQ.hint}</p>
 
               <div className="space-y-2">
                 {currentQ.options.map((opt, oi) => {
@@ -358,22 +362,19 @@ export default function QuizPage() {
                       transition={{ delay: oi * 0.06 }}
                       whileTap={{ scale: 0.99 }}
                       whileHover={{ x: 2 }}
-                      className={`w-full flex items-center gap-4 p-4 border transition-all text-left ${
-                        selected ? "border-loreal-champagne bg-loreal-cream" : "border-loreal-border bg-white hover:border-loreal-champagne/40 hover:bg-loreal-cream/40"
+                      className={`w-full flex items-center gap-4 p-4 border-2 transition-all text-left ${
+                        selected ? "border-scent-noir bg-scent-gold" : "border-scent-noir/20 bg-scent-parchment hover:border-scent-noir/60"
                       }`}>
                       <span className="text-xl w-8 text-center flex-shrink-0">{opt.icon}</span>
                       <div className="flex-1">
-                        <div className={`font-sans text-sm font-medium ${selected ? "text-loreal-charcoal" : "text-loreal-slate"}`}>
+                        <div className="font-sans text-sm font-bold text-scent-noir">
                           {opt.label}
                         </div>
-                        <div className="body-sm text-[11px]">{opt.description}</div>
+                        <div className={`text-[11px] mt-0.5 ${selected ? "text-scent-noir/80" : "text-loreal-muted"}`}>{opt.description}</div>
                       </div>
-                      <motion.div animate={{ scale: selected ? 1 : 1, backgroundColor: selected ? "#A48B75" : "transparent" }}
-                        className={`w-4 h-4 border flex items-center justify-center flex-shrink-0 transition-all ${
-                          selected ? "border-loreal-champagne bg-loreal-champagne" : "border-loreal-border"
-                        }`}>
-                        {selected && <span className="text-white text-[10px]">✓</span>}
-                      </motion.div>
+                      <div className={`w-5 h-5 border-2 border-scent-noir flex items-center justify-center flex-shrink-0 transition-all ${selected ? "bg-scent-noir text-scent-gold" : "bg-transparent"}`}>
+                        {selected && <span className="text-[10px] font-bold">✓</span>}
+                      </div>
                     </motion.button>
                   );
                 })}
@@ -383,15 +384,15 @@ export default function QuizPage() {
         </div>
       </div>
 
-      <div className="border-t border-loreal-border px-5 py-4">
+      <div className="border-t-2 border-scent-noir px-5 py-4 bg-scent-parchment">
         <div className="max-w-xl mx-auto flex gap-3">
-          <motion.button whileTap={{ scale: 0.98 }} onClick={() => step === 0 ? setStage("profile") : setStep(step - 1)}
-            className="btn-outline text-sm flex-shrink-0 px-6">Back</motion.button>
-          <motion.button whileTap={{ scale: 0.98 }} onClick={nextQuestion}
+          <button onClick={() => step === 0 ? setStage("profile") : setStep(step - 1)}
+            className="pill pill-parchment text-[12px] flex-shrink-0 px-6 py-2.5">Back</button>
+          <button onClick={nextQuestion}
             disabled={!(answers[step]?.length > 0)}
-            className={`btn-primary text-sm flex-1 ${!(answers[step]?.length > 0) ? "opacity-30 cursor-not-allowed" : ""}`}>
-            {step === quizQuestions.length - 1 ? "Reveal My Identity" : "Continue"}
-          </motion.button>
+            className={`pill pill-gold text-[12px] flex-1 py-2.5 ${!(answers[step]?.length > 0) ? "opacity-30 cursor-not-allowed" : ""}`}>
+            {step === quizQuestions.length - 1 ? "Reveal My Identity →" : "Continue →"}
+          </button>
         </div>
       </div>
     </main>

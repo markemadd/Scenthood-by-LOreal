@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,211 +6,181 @@
 
 @layer base {
   :root {
-    --white: #FBF6F3;
-    --cream: #EDE4DC;
-    --sand: #E0D5CC;
-    --neutral: #F3F3F3;
-    --champagne: #A48B75;
-    --gold: #8A7362;
-    --accent2: #B3A59C;
-    --charcoal: #1A1A1A;
-    --slate: #3D3D3D;
-    --muted: #7A6D67;
-    --border: #D8CEC7;
+    --noir:       #0D0D0D;
+    --parchment:  #F5F0E8;
+    --dark-oud:   #2A2320;
+    --gold:       #C9A84C;
+    --amber:      #8B7355;
+    --alabaster:  #E8E0D0;
+    --oud-rose:   #6B2D3A;
   }
 
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  html {
-    scroll-behavior: smooth;
-  }
+  html { scroll-behavior: smooth; }
 
   body {
-    @apply bg-loreal-white text-loreal-charcoal font-sans antialiased;
+    @apply bg-scent-parchment text-scent-noir font-sans antialiased;
     font-size: 15px;
-    line-height: 1.6;
+    line-height: 1.55;
   }
 
-  ::selection {
-    background: rgba(164, 139, 117, 0.22);
-  }
+  ::selection { background: rgba(201, 168, 76, 0.32); color: var(--noir); }
 
-  ::-webkit-scrollbar {
-    width: 4px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: #EDE4DC;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: #A48B7550;
-    border-radius: 2px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: #A48B75;
-  }
+  ::-webkit-scrollbar          { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track    { background: var(--alabaster); }
+  ::-webkit-scrollbar-thumb    { background: var(--amber); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--noir); }
 }
 
 @layer components {
 
-  /* === TYPOGRAPHY === */
-  .heading-xl {
-    @apply font-serif font-light text-loreal-charcoal;
-    font-size: clamp(2.5rem, 6vw, 5rem);
-    line-height: 1.05;
+  /* === DISPLAY TYPOGRAPHY === */
+  .display-hero {
+    font-family: 'Archivo Black', system-ui, sans-serif;
+    font-weight: 900;
+    font-size: clamp(3.2rem, 11vw, 11rem);
+    line-height: 0.88;
+    letter-spacing: -0.02em;
+    text-transform: none;
+  }
+
+  .display-xl {
+    font-family: 'Archivo Black', system-ui, sans-serif;
+    font-weight: 900;
+    font-size: clamp(2.4rem, 7vw, 6rem);
+    line-height: 0.92;
+    letter-spacing: -0.015em;
+  }
+
+  .display-lg {
+    font-family: 'Archivo Black', system-ui, sans-serif;
+    font-weight: 900;
+    font-size: clamp(1.9rem, 4.5vw, 3.4rem);
+    line-height: 0.95;
     letter-spacing: -0.01em;
   }
 
-  .heading-lg {
-    @apply font-serif font-light text-loreal-charcoal;
-    font-size: clamp(1.8rem, 4vw, 3rem);
-    line-height: 1.1;
+  .display-md {
+    font-family: 'Archivo Black', system-ui, sans-serif;
+    font-weight: 900;
+    font-size: clamp(1.3rem, 2.4vw, 1.9rem);
+    line-height: 1.05;
   }
 
-  .heading-md {
-    @apply font-serif font-normal text-loreal-charcoal;
-    font-size: clamp(1.3rem, 2.5vw, 1.8rem);
-    line-height: 1.2;
-  }
-
-  .heading-sm {
-    @apply font-serif font-normal text-loreal-charcoal text-xl;
-    line-height: 1.3;
-  }
+  .heading-xl { @apply font-serif font-light text-scent-noir;
+    font-size: clamp(2.5rem, 6vw, 5rem); line-height: 1.05; letter-spacing: -0.01em; }
+  .heading-lg { @apply font-serif font-light text-scent-noir;
+    font-size: clamp(1.8rem, 4vw, 3rem); line-height: 1.1; }
+  .heading-md { @apply font-serif font-normal text-scent-noir;
+    font-size: clamp(1.3rem, 2.5vw, 1.8rem); line-height: 1.2; }
+  .heading-sm { @apply font-serif font-normal text-scent-noir text-xl; line-height: 1.3; }
 
   .eyebrow {
-    @apply font-sans text-loreal-champagne uppercase tracking-[0.25em] text-[10px] font-medium;
+    @apply font-sans uppercase tracking-[0.22em] text-[10px] font-bold;
+    color: var(--gold);
   }
+  .eyebrow-dark { @apply font-sans uppercase tracking-[0.22em] text-[10px] font-bold text-scent-noir; }
 
-  .body-lead {
-    @apply font-sans text-loreal-slate text-base leading-relaxed;
-  }
+  .body-lead { @apply font-sans text-scent-darkOud text-base leading-relaxed; }
+  .body-sm   { @apply font-sans text-loreal-muted text-sm leading-relaxed; }
 
-  .body-sm {
-    @apply font-sans text-loreal-muted text-sm leading-relaxed;
+  /* === GRAIN TEXTURE === */
+  .grain::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.22;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    z-index: 1;
   }
+  .grain-light::before { opacity: 0.10; }
+  .grain-heavy::before { opacity: 0.35; }
+
+  /* === PILL BUTTON (template signature) === */
+  .pill {
+    @apply inline-flex items-center justify-center px-5 py-2 rounded-full font-sans font-bold text-[12px] tracking-[0.02em] transition-all duration-200;
+    border: 1.5px solid var(--noir);
+  }
+  .pill-gold      { background: var(--gold);     color: var(--noir); }
+  .pill-rose      { background: var(--oud-rose); color: var(--parchment); }
+  .pill-parchment { background: var(--parchment); color: var(--noir); }
+  .pill-noir      { background: var(--noir); color: var(--parchment); border-color: var(--parchment); }
+  .pill:hover     { transform: translateY(-1px); box-shadow: 0 4px 0 var(--noir); }
 
   /* === CARDS === */
-  .card {
-    @apply bg-white rounded-none border border-loreal-border;
-  }
+  .card        { @apply bg-scent-parchment border border-scent-alabaster; }
+  .card-dark   { @apply bg-scent-darkOud border border-white/10 text-scent-parchment; }
+  .card-cream  { @apply bg-scent-alabaster border border-scent-alabaster; }
 
-  .card-soft {
-    background: rgba(250, 250, 248, 0.98);
-    @apply border border-loreal-border rounded-none;
-  }
-
-  .card-cream {
-    @apply bg-loreal-cream border border-loreal-border rounded-none;
-  }
-
-  .card-hover {
-    @apply bg-white border border-loreal-border rounded-none transition-all duration-300;
-  }
-
-  .card-hover:hover {
-    @apply border-loreal-champagne/60;
-    box-shadow: 0 4px 24px rgba(164, 139, 117, 0.1);
-    transform: translateY(-2px);
-  }
-
-  /* === BUTTONS === */
+  /* === BUTTONS (legacy classes kept) === */
   .btn-primary {
-    @apply inline-flex items-center justify-center px-8 py-3.5 bg-loreal-charcoal text-loreal-white font-sans text-sm tracking-[0.12em] uppercase font-medium transition-all duration-300;
+    @apply inline-flex items-center justify-center px-8 py-3.5 bg-scent-noir text-scent-parchment font-sans text-sm tracking-[0.12em] uppercase font-bold transition-all duration-300;
   }
-
-  .btn-primary:hover {
-    @apply bg-loreal-slate;
-  }
+  .btn-primary:hover { background: var(--dark-oud); }
 
   .btn-gold {
-    @apply inline-flex items-center justify-center px-8 py-3.5 bg-loreal-champagne text-white font-sans text-sm tracking-[0.12em] uppercase font-medium transition-all duration-300;
+    @apply inline-flex items-center justify-center px-8 py-3.5 font-sans text-sm tracking-[0.12em] uppercase font-bold transition-all duration-300;
+    background: var(--gold); color: var(--noir);
   }
+  .btn-gold:hover { background: #d8b85a; }
 
-  .btn-gold:hover {
-    @apply bg-loreal-gold;
+  .btn-rose {
+    @apply inline-flex items-center justify-center px-8 py-3.5 font-sans text-sm tracking-[0.12em] uppercase font-bold transition-all duration-300;
+    background: var(--oud-rose); color: var(--parchment);
   }
+  .btn-rose:hover { background: #8a3d4d; }
 
   .btn-outline {
-    @apply inline-flex items-center justify-center px-8 py-3.5 border border-loreal-charcoal text-loreal-charcoal font-sans text-sm tracking-[0.12em] uppercase font-medium transition-all duration-300;
+    @apply inline-flex items-center justify-center px-8 py-3.5 border-2 border-scent-noir text-scent-noir font-sans text-sm tracking-[0.12em] uppercase font-bold transition-all duration-300;
   }
-
-  .btn-outline:hover {
-    @apply bg-loreal-charcoal text-white;
-  }
+  .btn-outline:hover { @apply bg-scent-noir text-scent-parchment; }
 
   .btn-outline-gold {
-    @apply inline-flex items-center justify-center px-6 py-3 border border-loreal-champagne text-loreal-champagne font-sans text-sm tracking-[0.1em] uppercase font-medium transition-all duration-300;
+    @apply inline-flex items-center justify-center px-6 py-3 border-2 font-sans text-sm tracking-[0.1em] uppercase font-bold transition-all duration-300;
+    border-color: var(--gold); color: var(--gold);
   }
-
-  .btn-outline-gold:hover {
-    @apply bg-loreal-champagne text-white;
-  }
+  .btn-outline-gold:hover { background: var(--gold); color: var(--noir); }
 
   /* === DIVIDERS === */
-  .divider {
-    @apply w-12 h-px bg-loreal-champagne;
-  }
+  .divider      { @apply w-12 h-px bg-scent-gold; }
+  .divider-full { @apply w-full h-px bg-scent-alabaster; }
+  .divider-noir { @apply w-full h-px bg-scent-noir/10; }
 
-  .divider-full {
-    @apply w-full h-px bg-loreal-border;
-  }
+  /* === CHAMPAGNE TEXT (legacy) === */
+  .champagne-text { color: var(--gold); }
+  .gold-text      { color: var(--gold); }
 
-  /* === CHAMPAGNE TEXT === */
-  .champagne-text {
-    color: #8A7362;
-  }
+  /* === PROGRESS === */
+  .progress-rail { @apply w-full h-px bg-scent-alabaster overflow-hidden; }
+  .progress-fill { @apply h-full bg-scent-gold transition-all duration-1000 ease-out; }
 
-  /* === PROGRESS BAR === */
-  .progress-rail {
-    @apply w-full h-px bg-loreal-border overflow-hidden;
-  }
-
-  .progress-fill {
-    @apply h-full bg-loreal-champagne transition-all duration-1000 ease-out;
-  }
-
-  /* === VOTE BAR === */
   .vote-option {
-    @apply w-full relative border border-loreal-border bg-loreal-white transition-all duration-200 hover:border-loreal-champagne/50;
+    @apply w-full relative border-2 border-scent-noir/15 bg-scent-parchment transition-all duration-200;
   }
+  .vote-option:hover  { @apply border-scent-noir/60; }
+  .vote-option.selected { @apply border-scent-gold bg-scent-gold/10; }
 
-  .vote-option.selected {
-    @apply border-loreal-champagne;
-  }
+  .section    { @apply py-12 px-5; }
+  .section-sm { @apply py-6 px-5; }
 
-  /* === PAGE SECTION === */
-  .section {
-    @apply py-12 px-5;
-  }
-
-  .section-sm {
-    @apply py-6 px-5;
-  }
-
-  /* === SCORE LABEL === */
   .score-pill {
-    @apply inline-block px-3 py-1 text-[10px] tracking-[0.15em] uppercase font-medium border;
+    @apply inline-block px-3 py-1 text-[10px] tracking-[0.15em] uppercase font-bold border;
+  }
+
+  /* Logo mark (S in a circle) */
+  .logo-mark {
+    @apply inline-flex items-center justify-center w-9 h-9 rounded-full font-display text-base;
+    background: var(--noir); color: var(--parchment);
   }
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+  .text-balance       { text-wrap: balance; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar       { -ms-overflow-style: none; scrollbar-width: none; }
+  .bg-grain {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 }
