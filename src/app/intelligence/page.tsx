@@ -52,7 +52,7 @@ function WeeklyChart() {
           return (
             <div key={w.week} className="flex-1 flex flex-col items-center gap-0.5 group cursor-default">
               <div className="hidden group-hover:flex flex-col items-center mb-1">
-                <div className="bg-loreal-charcoal text-white text-xs px-2.5 py-1.5 whitespace-nowrap font-sans">
+                <div className="bg-scent-noir text-white text-xs px-2.5 py-1.5 whitespace-nowrap font-sans">
                   {w.votes.toLocaleString()} votes · +{w.newMembers} members
                 </div>
               </div>
@@ -70,12 +70,12 @@ function WeeklyChart() {
       </div>
       <div className="flex gap-2 mb-3">
         {weeklyEngagement.map((w) => (
-          <div key={w.week} className="flex-1 text-center text-xs text-loreal-slate font-medium">{w.week}</div>
+          <div key={w.week} className="flex-1 text-center text-xs text-scent-darkOud font-medium">{w.week}</div>
         ))}
       </div>
       <div className="flex items-center gap-5">
-        <div className="flex items-center gap-2"><div className="w-3 h-3 bg-loreal-champagne" /><span className="text-xs text-loreal-slate font-medium">Votes</span></div>
-        <div className="flex items-center gap-2"><div className="w-3 h-3 bg-loreal-sand" /><span className="text-xs text-loreal-slate font-medium">Reviews</span></div>
+        <div className="flex items-center gap-2"><div className="w-3 h-3 bg-loreal-champagne" /><span className="text-xs text-scent-darkOud font-medium">Votes</span></div>
+        <div className="flex items-center gap-2"><div className="w-3 h-3 bg-loreal-sand" /><span className="text-xs text-scent-darkOud font-medium">Reviews</span></div>
       </div>
     </div>
   );
@@ -104,7 +104,7 @@ function WorldMap() {
   const [hovered, setHovered] = useState<string | null>(null);
 
   return (
-    <div className="relative overflow-hidden bg-loreal-cream border-t border-loreal-border">
+    <div className="relative overflow-hidden bg-scent-alabaster/30 border-t border-scent-alabaster">
       <svg viewBox="0 0 900 370" className="w-full" style={{ maxHeight: 310 }}>
         {/* Ocean / background — use the app cream */}
         <rect x="0" y="0" width="900" height="370" fill="#EDE4DC" />
@@ -182,8 +182,8 @@ function WorldMap() {
       </svg>
 
       {/* Colour legend */}
-      <div className="px-5 py-3 border-t border-loreal-border bg-white flex items-center gap-4 flex-wrap">
-        <span className="text-xs font-semibold text-loreal-charcoal uppercase tracking-[0.12em]">Demand Intensity</span>
+      <div className="px-5 py-3 border-t border-scent-alabaster bg-scent-parchment flex items-center gap-4 flex-wrap">
+        <span className="text-xs font-semibold text-scent-noir uppercase tracking-[0.12em]">Demand Intensity</span>
         <div className="flex items-center gap-1">
           {[
             { color: "#2980b9", label: "Low" },
@@ -193,7 +193,7 @@ function WorldMap() {
           ].map((l) => (
             <div key={l.label} className="flex items-center gap-1.5 mr-3">
               <div className="w-3 h-3 rounded-full" style={{ background: l.color }} />
-              <span className="text-xs text-loreal-slate font-medium">{l.label}</span>
+              <span className="text-xs text-scent-darkOud font-medium">{l.label}</span>
             </div>
           ))}
         </div>
@@ -266,14 +266,14 @@ function InViewSection({ children, delay = 0 }: { children: React.ReactNode; del
 
 // ── Shared section label ──
 function SectionLabel({ children }: { children: React.ReactNode }) {
-  return <div className="text-[11px] font-bold uppercase tracking-[0.18em] text-loreal-charcoal mb-1">{children}</div>;
+  return <div className="text-[11px] font-bold uppercase tracking-[0.18em] text-scent-noir mb-1">{children}</div>;
 }
 
 export default function IntelligencePage() {
   const [activeTab, setActiveTab] = useState<"rising" | "declining">("rising");
 
   return (
-    <main className="min-h-screen bg-scent-parchment pb-28 md:pb-0">
+    <main className="min-h-screen bg-scent-parchment pb-0">
       <BottomNav />
 
       {/* === HERO === */}
@@ -317,35 +317,35 @@ export default function IntelligencePage() {
 
         {/* ── STRATEGIC RECOMMENDATIONS (moved to top) ── */}
         <InViewSection delay={0.1}>
-          <div className="border border-loreal-border bg-white">
-            <div className="border-b border-loreal-border px-6 py-4">
+          <div className="border border-scent-alabaster bg-scent-parchment">
+            <div className="border-b border-scent-alabaster px-6 py-4">
               <SectionLabel>Strategic Recommendations</SectionLabel>
-              <div className="font-serif text-xl text-loreal-charcoal font-light">Where to Direct R&amp;D &amp; Community Energy</div>
+              <div className="font-serif text-xl text-scent-noir font-light">Where to Direct R&amp;D &amp; Community Energy</div>
             </div>
-            <div className="divide-y divide-loreal-border">
+            <div className="divide-y divide-scent-alabaster">
               {SCENT_FOCUS.map((rec, i) => (
                 <motion.div key={rec.priority} initial={{ opacity: 0, x: -12 }} whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }} transition={{ delay: i * 0.08, duration: 0.45 }}
-                  className="p-6 flex gap-5 hover:bg-loreal-cream/25 transition-colors group">
+                  className="p-6 flex gap-5 hover:bg-scent-alabaster/20 transition-colors group">
                   <div className="flex-shrink-0 w-10 text-center pt-0.5">
                     <div className="font-serif text-2xl font-light champagne-text leading-none">{rec.priority}</div>
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-3 mb-2 flex-wrap">
-                      <div className="text-base font-bold text-loreal-charcoal">{rec.label}</div>
+                      <div className="text-base font-bold text-scent-noir">{rec.label}</div>
                       <div className="flex gap-2">
                         <span className={`text-xs uppercase tracking-[0.1em] px-2.5 py-1 font-bold border ${
                           rec.impact === "High"
                             ? "border-emerald-400 text-emerald-700 bg-emerald-50"
-                            : "border-loreal-champagne/60 text-loreal-champagne bg-loreal-cream/60"
+                            : "border-loreal-champagne/60 text-loreal-champagne bg-scent-alabaster/30/60"
                         }`}>{rec.impact}</span>
-                        <span className="text-xs uppercase tracking-[0.1em] px-2.5 py-1 border border-loreal-border text-loreal-slate font-semibold">{rec.timeframe}</span>
+                        <span className="text-xs uppercase tracking-[0.1em] px-2.5 py-1 border border-scent-alabaster text-scent-darkOud font-semibold">{rec.timeframe}</span>
                       </div>
                     </div>
-                    <p className="text-sm text-loreal-slate leading-relaxed mb-3">{rec.rationale}</p>
-                    <div className="flex items-start gap-2.5 p-3 bg-loreal-cream border-l-2 border-loreal-champagne">
+                    <p className="text-sm text-scent-darkOud leading-relaxed mb-3">{rec.rationale}</p>
+                    <div className="flex items-start gap-2.5 p-3 bg-scent-alabaster/30 border-l-2 border-loreal-champagne">
                       <span className="text-loreal-champagne text-sm flex-shrink-0 mt-0.5 font-bold">→</span>
-                      <span className="text-sm text-loreal-charcoal font-semibold leading-snug">{rec.action}</span>
+                      <span className="text-sm text-scent-noir font-semibold leading-snug">{rec.action}</span>
                     </div>
                   </div>
                 </motion.div>
@@ -356,17 +356,17 @@ export default function IntelligencePage() {
 
         {/* ── TREND FORECAST (moved to top) ── */}
         <InViewSection delay={0.05}>
-          <div className="border border-loreal-border bg-white">
-            <div className="border-b border-loreal-border px-6 py-4 flex items-center justify-between flex-wrap gap-3">
+          <div className="border border-scent-alabaster bg-scent-parchment">
+            <div className="border-b border-scent-alabaster px-6 py-4 flex items-center justify-between flex-wrap gap-3">
               <div>
                 <SectionLabel>Trend Forecast</SectionLabel>
-                <div className="font-serif text-xl text-loreal-charcoal font-light">Accord Momentum — Next 12 Months</div>
+                <div className="font-serif text-xl text-scent-noir font-light">Accord Momentum — Next 12 Months</div>
               </div>
-              <div className="flex border border-loreal-border">
+              <div className="flex border border-scent-alabaster">
                 {(["rising", "declining"] as const).map((tab) => (
                   <button key={tab} onClick={() => setActiveTab(tab)}
                     className={`px-5 py-2.5 text-xs uppercase tracking-[0.12em] font-bold transition-all ${
-                      activeTab === tab ? "bg-loreal-charcoal text-white" : "bg-white text-loreal-slate hover:text-loreal-charcoal"
+                      activeTab === tab ? "bg-scent-noir text-scent-parchment" : "bg-scent-parchment text-scent-darkOud hover:text-scent-noir"
                     }`}>
                     {tab === "rising" ? "↑ Rising" : "↓ Declining"}
                   </button>
@@ -381,17 +381,17 @@ export default function IntelligencePage() {
                   {TREND_FORECAST.rising.map((t, i) => (
                     <motion.div key={t.accord} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: i * 0.07 }}
-                      className="flex gap-4 p-4 border border-loreal-border hover:border-loreal-champagne/60 hover:bg-loreal-cream/20 transition-all group">
+                      className="flex gap-4 p-4 border border-scent-alabaster hover:border-loreal-champagne/60 hover:bg-scent-alabaster/15 transition-all group">
                       <div className="flex-shrink-0 w-14 text-center">
                         <div className="font-serif text-3xl font-light champagne-text leading-none">{t.momentum}</div>
-                        <div className="text-xs text-loreal-slate font-medium mt-0.5">score</div>
+                        <div className="text-xs text-scent-darkOud font-medium mt-0.5">score</div>
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2 mb-1.5 flex-wrap">
-                          <div className="text-sm font-bold text-loreal-charcoal">{t.accord}</div>
+                          <div className="text-sm font-bold text-scent-noir">{t.accord}</div>
                           <div className="text-xs text-emerald-600 font-semibold whitespace-nowrap">{t.horizon}</div>
                         </div>
-                        <div className="text-sm text-loreal-slate mb-2.5">{t.driver}</div>
+                        <div className="text-sm text-scent-darkOud mb-2.5">{t.driver}</div>
                         <div className="flex flex-wrap gap-1.5">
                           {t.brands.map((b) => (
                             <span key={b} className="text-xs uppercase tracking-[0.1em] px-2.5 py-0.5 border border-loreal-champagne/50 text-loreal-champagne font-semibold">
@@ -400,7 +400,7 @@ export default function IntelligencePage() {
                           ))}
                         </div>
                       </div>
-                      <div className="w-2 self-stretch bg-loreal-border overflow-hidden flex-shrink-0">
+                      <div className="w-2 self-stretch bg-scent-alabaster overflow-hidden flex-shrink-0">
                         <motion.div className="w-full bg-loreal-champagne" initial={{ height: 0 }}
                           animate={{ height: `${t.momentum}%` }}
                           transition={{ duration: 0.8, delay: i * 0.07 + 0.2, ease: "easeOut" }}
@@ -415,20 +415,20 @@ export default function IntelligencePage() {
                   {TREND_FORECAST.declining.map((t, i) => (
                     <motion.div key={t.accord} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: i * 0.07 }}
-                      className="flex gap-4 p-4 border border-loreal-border">
+                      className="flex gap-4 p-4 border border-scent-alabaster">
                       <div className="flex-shrink-0 w-14 text-center">
                         <div className="font-serif text-3xl font-light leading-none" style={{ color: "#e74c3c" }}>{t.drop}%</div>
-                        <div className="text-xs text-loreal-slate font-medium mt-0.5">YoY</div>
+                        <div className="text-xs text-scent-darkOud font-medium mt-0.5">YoY</div>
                       </div>
                       <div className="flex-1">
-                        <div className="text-sm font-bold text-loreal-charcoal mb-1.5">{t.accord}</div>
-                        <div className="text-sm text-loreal-slate">{t.reason}</div>
+                        <div className="text-sm font-bold text-scent-noir mb-1.5">{t.accord}</div>
+                        <div className="text-sm text-scent-darkOud">{t.reason}</div>
                       </div>
                     </motion.div>
                   ))}
-                  <div className="p-4 bg-loreal-cream border border-loreal-champagne/40">
-                    <div className="text-xs font-bold text-loreal-charcoal mb-1.5">Strategic Note</div>
-                    <div className="text-sm text-loreal-slate leading-relaxed">
+                  <div className="p-4 bg-scent-alabaster/30 border border-loreal-champagne/40">
+                    <div className="text-xs font-bold text-scent-noir mb-1.5">Strategic Note</div>
+                    <div className="text-sm text-scent-darkOud leading-relaxed">
                       Declining accords signal an opportunity to reinterpret rather than abandon — lighter, fresher iterations are gaining traction in SCENTHOOD data.
                     </div>
                   </div>
@@ -447,12 +447,12 @@ export default function IntelligencePage() {
             { label: "Content Creators", value: `${contentCreatorRate}%`, note: "of members post",  trend: "Benchmark: 15%",         spark: [18,22,25,28,30,34] },
           ].map((kpi, i) => (
             <motion.div key={kpi.label} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.07 }} className="border border-loreal-border p-5 bg-white">
+              transition={{ delay: i * 0.07 }} className="border border-scent-alabaster p-5 bg-scent-parchment">
               <SectionLabel>{kpi.label}</SectionLabel>
               <div className="flex items-end justify-between mt-2">
                 <div>
                   <div className="font-serif text-3xl font-light champagne-text leading-none">{kpi.value}</div>
-                  <div className="text-xs text-loreal-slate mt-1.5">{kpi.note}</div>
+                  <div className="text-xs text-scent-darkOud mt-1.5">{kpi.note}</div>
                 </div>
                 <Sparkline data={kpi.spark} />
               </div>
@@ -463,45 +463,45 @@ export default function IntelligencePage() {
 
         {/* ── WEEKLY ENGAGEMENT + CONTENT FORMAT ── */}
         <div className="grid md:grid-cols-3 gap-4">
-          <div className="md:col-span-2 border border-loreal-border p-6 bg-white">
+          <div className="md:col-span-2 border border-scent-alabaster p-6 bg-scent-parchment">
             <div className="flex items-start justify-between mb-5">
               <div>
                 <SectionLabel>Weekly Engagement</SectionLabel>
-                <div className="font-serif text-xl text-loreal-charcoal font-light">Votes &amp; Reviews — 8 Weeks</div>
+                <div className="font-serif text-xl text-scent-noir font-light">Votes &amp; Reviews — 8 Weeks</div>
               </div>
               <div className="text-right">
                 <div className="text-sm text-emerald-600 font-semibold">+195% votes</div>
-                <div className="text-xs text-loreal-slate mt-0.5">vs Week 1</div>
+                <div className="text-xs text-scent-darkOud mt-0.5">vs Week 1</div>
               </div>
             </div>
             <WeeklyChart />
           </div>
 
-          <div className="border border-loreal-border p-6 bg-white">
+          <div className="border border-scent-alabaster p-6 bg-scent-parchment">
             <SectionLabel>Content Format ROI</SectionLabel>
-            <div className="font-serif text-xl text-loreal-charcoal font-light mb-5">Avg Views by Type</div>
+            <div className="font-serif text-xl text-scent-noir font-light mb-5">Avg Views by Type</div>
             <div className="space-y-5">
               {contentPerformance.map((cp) => (
                 <div key={cp.format}>
                   <div className="flex justify-between mb-1.5">
-                    <span className="text-sm font-semibold text-loreal-charcoal">{cp.format}</span>
+                    <span className="text-sm font-semibold text-scent-noir">{cp.format}</span>
                     <span className="champagne-text font-serif text-base font-medium">{cp.avgViews.toLocaleString()} views</span>
                   </div>
-                  <div className="h-1.5 w-full bg-loreal-border overflow-hidden">
+                  <div className="h-1.5 w-full bg-scent-alabaster overflow-hidden">
                     <motion.div initial={{ width: 0 }} animate={{ width: `${(cp.avgViews / 4200) * 100}%` }}
                       transition={{ duration: 0.9, ease: "easeOut" }} className="h-full bg-loreal-champagne" />
                   </div>
-                  <div className="flex justify-between text-xs text-loreal-slate mt-1">
+                  <div className="flex justify-between text-xs text-scent-darkOud mt-1">
                     <span>+{cp.avgCCS} LIS earned</span>
                     <span>{cp.conversionToVote}% vote after</span>
                   </div>
                 </div>
               ))}
             </div>
-            <div className="mt-5 border-t border-loreal-border pt-4 bg-loreal-cream/40 -mx-6 px-6 -mb-6 pb-5">
-              <div className="text-xs font-bold text-loreal-charcoal mb-1.5">Key Insight</div>
-              <div className="text-xs text-loreal-slate leading-relaxed">
-                Video reviewers convert to product page at <span className="font-semibold text-loreal-charcoal">2.4×</span> the rate of text reviewers.
+            <div className="mt-5 border-t border-scent-alabaster pt-4 bg-scent-alabaster/30 -mx-6 px-6 -mb-6 pb-5">
+              <div className="text-xs font-bold text-scent-noir mb-1.5">Key Insight</div>
+              <div className="text-xs text-scent-darkOud leading-relaxed">
+                Video reviewers convert to product page at <span className="font-semibold text-scent-noir">2.4×</span> the rate of text reviewers.
               </div>
             </div>
           </div>
@@ -509,22 +509,22 @@ export default function IntelligencePage() {
 
         {/* ── BRAND ENGAGEMENT + ACCORD/AGE ── */}
         <div className="grid md:grid-cols-2 gap-4">
-          <div className="border border-loreal-border bg-white">
-            <div className="border-b border-loreal-border px-6 py-4">
+          <div className="border border-scent-alabaster bg-scent-parchment">
+            <div className="border-b border-scent-alabaster px-6 py-4">
               <SectionLabel>Brand Performance</SectionLabel>
-              <div className="font-serif text-xl text-loreal-charcoal font-light">Posts, Votes &amp; LIS Generated</div>
+              <div className="font-serif text-xl text-scent-noir font-light">Posts, Votes &amp; LIS Generated</div>
             </div>
             <div className="p-6 space-y-5">
               {brandEngagement.map((b, i) => (
                 <div key={b.brand}>
                   <div className="flex justify-between mb-1.5">
-                    <span className="text-sm font-bold text-loreal-charcoal">{b.brand}</span>
+                    <span className="text-sm font-bold text-scent-noir">{b.brand}</span>
                     <div className="flex gap-4">
-                      <span className="text-xs text-loreal-slate font-medium">{(b.ccsGenerated / 1000).toFixed(0)}K LIS</span>
+                      <span className="text-xs text-scent-darkOud font-medium">{(b.ccsGenerated / 1000).toFixed(0)}K LIS</span>
                       <span className="text-sm champagne-text font-semibold">{b.posts.toLocaleString()} posts</span>
                     </div>
                   </div>
-                  <div className="h-2 w-full bg-loreal-border overflow-hidden">
+                  <div className="h-2 w-full bg-scent-alabaster overflow-hidden">
                     <motion.div initial={{ width: 0 }}
                       animate={{ width: `${(b.posts / brandEngagement[0].posts) * 100}%` }}
                       transition={{ duration: 0.9, delay: i * 0.1, ease: "easeOut" }}
@@ -535,18 +535,18 @@ export default function IntelligencePage() {
             </div>
           </div>
 
-          <div className="border border-loreal-border bg-white">
-            <div className="border-b border-loreal-border px-6 py-4">
+          <div className="border border-scent-alabaster bg-scent-parchment">
+            <div className="border-b border-scent-alabaster px-6 py-4">
               <SectionLabel>Demand by Age Group</SectionLabel>
-              <div className="font-serif text-xl text-loreal-charcoal font-light">Top Accords × Generation</div>
+              <div className="font-serif text-xl text-scent-noir font-light">Top Accords × Generation</div>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-loreal-border bg-loreal-cream/50">
-                    <th className="text-left px-5 py-3 text-xs font-bold uppercase tracking-[0.1em] text-loreal-charcoal">Accord</th>
+                  <tr className="border-b border-scent-alabaster bg-scent-alabaster/40">
+                    <th className="text-left px-5 py-3 text-xs font-bold uppercase tracking-[0.1em] text-scent-noir">Accord</th>
                     {["18-24", "25-34", "35-44", "45+"].map((age) => (
-                      <th key={age} className="text-center px-3 py-3 text-xs font-bold uppercase tracking-[0.1em] text-loreal-charcoal">{age}</th>
+                      <th key={age} className="text-center px-3 py-3 text-xs font-bold uppercase tracking-[0.1em] text-scent-noir">{age}</th>
                     ))}
                   </tr>
                 </thead>
@@ -555,16 +555,16 @@ export default function IntelligencePage() {
                     const vals = [row["18-24"], row["25-34"], row["35-44"], row["45+"]];
                     const max = Math.max(...vals);
                     return (
-                      <tr key={row.accord} className="border-b border-loreal-border last:border-b-0 hover:bg-loreal-cream/30 transition-colors">
-                        <td className="px-5 py-3 text-sm font-semibold text-loreal-charcoal">{row.accord}</td>
+                      <tr key={row.accord} className="border-b border-scent-alabaster last:border-b-0 hover:bg-scent-alabaster/20 transition-colors">
+                        <td className="px-5 py-3 text-sm font-semibold text-scent-noir">{row.accord}</td>
                         {vals.map((v, vi) => (
                           <td key={vi} className="px-3 py-3 text-center">
                             {v === max ? (
-                              <span className="inline-flex items-center justify-center bg-loreal-champagne text-white font-sans font-bold text-xs px-2.5 py-1 min-w-[46px]">
+                              <span className="inline-flex items-center justify-center bg-scent-gold text-scent-noir font-sans font-bold text-xs px-2.5 py-1 min-w-[46px]">
                                 {v}%
                               </span>
                             ) : (
-                              <span className="font-sans text-sm text-loreal-slate font-medium">{v}%</span>
+                              <span className="font-sans text-sm text-scent-darkOud font-medium">{v}%</span>
                             )}
                           </td>
                         ))}
@@ -573,9 +573,9 @@ export default function IntelligencePage() {
                   })}
                 </tbody>
               </table>
-              <div className="px-5 py-4 border-t border-loreal-border bg-loreal-cream/40">
-                <div className="text-xs font-bold text-loreal-charcoal mb-1.5">Key Insight</div>
-                <div className="text-xs text-loreal-slate leading-relaxed">Gourmand skews heavily Gen Z (44%) — brief opportunity for YSL to capture this audience.</div>
+              <div className="px-5 py-4 border-t border-scent-alabaster bg-scent-alabaster/30">
+                <div className="text-xs font-bold text-scent-noir mb-1.5">Key Insight</div>
+                <div className="text-xs text-scent-darkOud leading-relaxed">Gourmand skews heavily Gen Z (44%) — brief opportunity for YSL to capture this audience.</div>
               </div>
             </div>
           </div>
@@ -583,33 +583,33 @@ export default function IntelligencePage() {
 
         {/* ── WORLD HEAT MAP ── */}
         <InViewSection>
-          <div className="border border-loreal-border bg-white">
-            <div className="border-b border-loreal-border px-6 py-4 flex items-center justify-between flex-wrap gap-2">
+          <div className="border border-scent-alabaster bg-scent-parchment">
+            <div className="border-b border-scent-alabaster px-6 py-4 flex items-center justify-between flex-wrap gap-2">
               <div>
                 <SectionLabel>Global Demand Map</SectionLabel>
-                <div className="font-serif text-xl text-loreal-charcoal font-light">Community Heat Map — 47 Countries</div>
+                <div className="font-serif text-xl text-scent-noir font-light">Community Heat Map — 47 Countries</div>
               </div>
               <div className="text-right">
                 <div className="text-sm text-emerald-600 font-semibold">All regions growing</div>
-                <div className="text-xs text-loreal-slate mt-0.5">Live community data</div>
+                <div className="text-xs text-scent-darkOud mt-0.5">Live community data</div>
               </div>
             </div>
             <WorldMap />
             {/* Region breakdown bars */}
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 border-t border-loreal-border">
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 border-t border-scent-alabaster">
               {regionBreakdown.map((r, i) => (
-                <div key={r.name} className="border-b border-r border-loreal-border p-5 last-of-type:border-b-0">
+                <div key={r.name} className="border-b border-r border-scent-alabaster p-5 last-of-type:border-b-0">
                   <div className="flex justify-between items-start mb-2">
                     <div>
-                      <div className="text-sm font-bold text-loreal-charcoal">{r.name}</div>
-                      <div className="text-xs text-loreal-slate mt-0.5">{r.families}</div>
+                      <div className="text-sm font-bold text-scent-noir">{r.name}</div>
+                      <div className="text-xs text-scent-darkOud mt-0.5">{r.families}</div>
                     </div>
                     <div className="text-right">
                       <div className="font-serif text-xl font-medium leading-none" style={{ color: heatColor(r.intensity) }}>{r.intensity}%</div>
                       <div className="text-xs text-emerald-600 font-semibold mt-0.5">{r.growth}</div>
                     </div>
                   </div>
-                  <div className="h-1.5 w-full bg-loreal-border overflow-hidden">
+                  <div className="h-1.5 w-full bg-scent-alabaster overflow-hidden">
                     <motion.div initial={{ width: 0 }} animate={{ width: `${r.intensity}%` }}
                       transition={{ duration: 0.9, delay: i * 0.08, ease: "easeOut" }}
                       className="h-full" style={{ background: heatColor(r.intensity) }} />
@@ -631,12 +631,12 @@ export default function IntelligencePage() {
             ].map((stat, i) => (
               <motion.div key={stat.label} initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }} transition={{ delay: i * 0.07 }}
-                className="border border-loreal-border p-5 bg-white text-center">
+                className="border border-scent-alabaster p-5 bg-scent-parchment text-center">
                 <div className="text-loreal-champagne text-xl mb-2">{stat.icon}</div>
                 <div className="font-serif text-3xl font-light champagne-text leading-none">
                   {stat.val}<span className="text-xl">{stat.unit}</span>
                 </div>
-                <div className="text-xs font-semibold text-loreal-slate mt-2 leading-snug">{stat.label}</div>
+                <div className="text-xs font-semibold text-scent-darkOud mt-2 leading-snug">{stat.label}</div>
                 <div className="text-xs text-emerald-600 font-bold mt-1">{stat.trend}</div>
               </motion.div>
             ))}

@@ -119,7 +119,7 @@ function VoteCard({ vote, idx }: { vote: AccordVote; idx: number }) {
 
 export default function VotePage() {
   return (
-    <main className="min-h-screen bg-scent-parchment pb-28 md:pb-12">
+    <main className="min-h-screen bg-scent-parchment pb-16">
       <BottomNav />
 
       {/* === HERO === */}

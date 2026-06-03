@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -9,7 +9,7 @@
     --noir:       #0D0D0D;
     --parchment:  #F5F0E8;
     --dark-oud:   #2A2320;
-    --gold:       #C9A84C;
+    --gold:       #D4A5A5;
     --amber:      #8B7355;
     --alabaster:  #E8E0D0;
     --oud-rose:   #6B2D3A;
@@ -25,7 +25,7 @@
     line-height: 1.55;
   }
 
-  ::selection { background: rgba(201, 168, 76, 0.32); color: var(--noir); }
+  ::selection { background: rgba(212, 165, 165, 0.32); color: var(--noir); }
 
   ::-webkit-scrollbar          { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track    { background: var(--alabaster); }
@@ -37,35 +37,35 @@
 
   /* === DISPLAY TYPOGRAPHY === */
   .display-hero {
-    font-family: 'Archivo Black', system-ui, sans-serif;
-    font-weight: 900;
-    font-size: clamp(3.2rem, 11vw, 11rem);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 700;
+    font-size: clamp(3.8rem, 12vw, 12rem);
     line-height: 0.88;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
     text-transform: none;
   }
 
   .display-xl {
-    font-family: 'Archivo Black', system-ui, sans-serif;
-    font-weight: 900;
-    font-size: clamp(2.4rem, 7vw, 6rem);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 700;
+    font-size: clamp(2.8rem, 8vw, 7rem);
     line-height: 0.92;
-    letter-spacing: -0.015em;
-  }
-
-  .display-lg {
-    font-family: 'Archivo Black', system-ui, sans-serif;
-    font-weight: 900;
-    font-size: clamp(1.9rem, 4.5vw, 3.4rem);
-    line-height: 0.95;
     letter-spacing: -0.01em;
   }
 
+  .display-lg {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    line-height: 1.0;
+    letter-spacing: -0.005em;
+  }
+
   .display-md {
-    font-family: 'Archivo Black', system-ui, sans-serif;
-    font-weight: 900;
-    font-size: clamp(1.3rem, 2.4vw, 1.9rem);
-    line-height: 1.05;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+    line-height: 1.1;
   }
 
   .heading-xl { @apply font-serif font-light text-scent-noir;
@@ -157,10 +157,11 @@
   .progress-fill { @apply h-full bg-scent-gold transition-all duration-1000 ease-out; }
 
   .vote-option {
-    @apply w-full relative border-2 border-scent-noir/15 bg-scent-parchment transition-all duration-200;
+    @apply w-full relative border-2 border-scent-noir/30 bg-scent-parchment transition-all duration-200;
+    border-left-width: 4px;
   }
-  .vote-option:hover  { @apply border-scent-noir/60; }
-  .vote-option.selected { @apply border-scent-gold bg-scent-gold/10; }
+  .vote-option:hover  { @apply border-scent-noir/70; border-left-color: var(--gold); }
+  .vote-option.selected { border-color: var(--noir); border-left-color: var(--gold); @apply bg-scent-gold/10; }
 
   .section    { @apply py-12 px-5; }
   .section-sm { @apply py-6 px-5; }

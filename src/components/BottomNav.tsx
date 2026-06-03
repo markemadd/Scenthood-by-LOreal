@@ -2,89 +2,140 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 
 const navItems = [
-  { href: "/home",         label: "Home",         color: "gold" },
-  { href: "/community",    label: "Community",    color: "parchment" },
-  { href: "/vote",         label: "Votes",        color: "rose" },
-  { href: "/intelligence", label: "Intelligence", color: "noir" },
-  { href: "/referral",     label: "Refer",        color: "parchment" },
-  { href: "/profile",      label: "Profile",      color: "gold" },
+  { href: "/home",         label: "Home" },
+  { href: "/community",    label: "Community" },
+  { href: "/vote",         label: "Votes" },
+  { href: "/intelligence", label: "Intelligence" },
+  { href: "/tiers",        label: "Tiers" },
+  { href: "/referral",     label: "Refer" },
+  { href: "/profile",      label: "Profile" },
 ] as const;
-
-function pillClass(color: string, active: boolean) {
-  const base = "pill text-[11px] px-4 py-1.5";
-  if (active) {
-    if (color === "gold")      return `${base} pill-gold`;
-    if (color === "rose")      return `${base} pill-rose`;
-    if (color === "noir")      return `${base} pill-noir`;
-    return `${base} pill-parchment`;
-  }
-  return `${base} pill-parchment opacity-70 hover:opacity-100`;
-}
 
 export default function BottomNav() {
   const pathname = usePathname();
+  const [open, setOpen] = useState(false);
 
   return (
     <>
-      {/* === TOP NAV === */}
+      {/* === TOP BAR === */}
       <motion.nav
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="fixed top-0 left-0 right-0 z-50"
+        className="fixed top-0 left-0 right-0 z-50 bg-scent-noir/95 backdrop-blur-md border-b border-white/10"
       >
-        <div className="px-4 md:px-8 pt-3 md:pt-5">
-          <div className="max-w-7xl mx-auto flex items-center justify-between">
-            {/* Logo mark */}
-            <Link href="/" className="flex items-center gap-2 group">
-              <div className="logo-mark group-hover:bg-scent-gold group-hover:text-scent-noir transition-colors">
-                S<span className="text-scent-gold group-hover:text-scent-noir">·</span>H
-              </div>
-            </Link>
-
-            {/* Pill nav — visible md+ */}
-            <div className="hidden md:flex items-center gap-2 bg-scent-parchment/70 backdrop-blur-md p-1.5 border-2 border-scent-noir rounded-full">
-              {navItems.map((item) => {
-                const active = pathname === item.href;
-                return (
-                  <Link key={item.href} href={item.href}
-                    className={pillClass(item.color, active)}>
-                    {item.label}
-                  </Link>
-                );
-              })}
+        <div className="max-w-7xl mx-auto px-5 md:px-10 h-14 flex items-center justify-between">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2.5 group flex-shrink-0" onClick={() => setOpen(false)}>
+            <div className="w-7 h-7 rounded-full bg-scent-parchment flex items-center justify-center font-serif text-xs text-scent-noir font-bold group-hover:bg-scent-gold transition-colors">
+              S
             </div>
+            <span className="hidden sm:block text-scent-parchment text-[11px] tracking-[0.22em] uppercase font-bold font-sans">
+              Scenthood
+            </span>
+          </Link>
 
-            {/* Right action */}
-            <Link href="/quiz" className="hidden md:inline-flex pill pill-noir text-[11px] px-4 py-1.5">
+          {/* Right side: Quiz CTA + Hamburger */}
+          <div className="flex items-center gap-4">
+            <Link
+              href="/quiz"
+              className="hidden sm:inline-flex items-center bg-scent-gold text-scent-noir text-[10px] uppercase tracking-[0.18em] font-bold font-sans px-4 py-1.5 hover:bg-scent-goldDark hover:text-scent-parchment transition-colors"
+              onClick={() => setOpen(false)}
+            >
               Take the Quiz
             </Link>
 
-            {/* Mobile: condensed action */}
-            <Link href="/quiz" className="md:hidden pill pill-noir text-[10px] px-3 py-1">
-              Quiz
-            </Link>
+            {/* Hamburger button */}
+            <button
+              onClick={() => setOpen(!open)}
+              className="flex flex-col justify-center items-center gap-[5px] w-10 h-10 group"
+              aria-label={open ? "Close menu" : "Open menu"}
+            >
+              <motion.span
+                animate={open ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="block w-6 h-px bg-scent-parchment group-hover:bg-scent-gold transition-colors origin-center"
+              />
+              <motion.span
+                animate={open ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }}
+                transition={{ duration: 0.2 }}
+                className="block w-6 h-px bg-scent-parchment group-hover:bg-scent-gold transition-colors"
+              />
+              <motion.span
+                animate={open ? { rotate: -45, y: -7 } : { rotate: 0, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="block w-6 h-px bg-scent-parchment group-hover:bg-scent-gold transition-colors origin-center"
+              />
+            </button>
           </div>
         </div>
       </motion.nav>
 
-      {/* === MOBILE BOTTOM NAV === */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden px-3 pb-3">
-        <div className="bg-scent-parchment/95 backdrop-blur-md border-2 border-scent-noir rounded-full p-1.5 flex items-center justify-between gap-1 overflow-x-auto no-scrollbar">
-          {navItems.map((item) => {
-            const active = pathname === item.href;
-            return (
-              <Link key={item.href} href={item.href}
-                className={`${pillClass(item.color, active)} flex-shrink-0`}>
-                {item.label}
+      {/* === FULL-SCREEN MENU OVERLAY === */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            key="menu-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.35 }}
+            className="fixed inset-0 z-40 bg-scent-noir grain flex flex-col"
+          >
+            {/* Nav links — vertically centered */}
+            <div className="flex-1 flex flex-col items-center justify-center gap-1 px-8">
+              {navItems.map((item, i) => {
+                const active = pathname === item.href;
+                return (
+                  <motion.div
+                    key={item.href}
+                    initial={{ opacity: 0, y: 24 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 16 }}
+                    transition={{ duration: 0.45, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    <Link
+                      href={item.href}
+                      onClick={() => setOpen(false)}
+                      className={`block font-serif text-5xl md:text-7xl font-light leading-tight transition-colors py-1 text-center ${
+                        active
+                          ? "text-scent-gold"
+                          : "text-scent-parchment/60 hover:text-scent-parchment"
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            {/* Bottom strip */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="border-t border-white/10 px-8 py-6 flex items-center justify-between"
+            >
+              <div className="text-[10px] uppercase tracking-[0.25em] text-scent-parchment/30 font-sans font-bold">
+                Brandstorm 2026 · L&apos;Oréal Luxe
+              </div>
+              <Link
+                href="/quiz"
+                onClick={() => setOpen(false)}
+                className="bg-scent-gold text-scent-noir text-[10px] uppercase tracking-[0.18em] font-bold font-sans px-5 py-2 hover:bg-scent-goldDark hover:text-scent-parchment transition-colors"
+              >
+                Take the Quiz →
               </Link>
-            );
-          })}
-        </div>
-      </nav>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </>
   );
 }

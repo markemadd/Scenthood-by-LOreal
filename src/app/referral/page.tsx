@@ -47,14 +47,14 @@ export default function ReferralPage() {
   };
 
   return (
-    <main className="min-h-screen bg-scent-parchment pb-28 md:pb-12">
+    <main className="min-h-screen bg-scent-parchment pb-16">
       <BottomNav />
 
-      {/* === HERO — Oud Rose === */}
-      <section className="relative min-h-[70vh] bg-scent-oudRose text-scent-parchment overflow-hidden grain">
-        <div className="absolute inset-0 opacity-30">
+      {/* === HERO — Dark === */}
+      <section className="relative min-h-[70vh] bg-scent-noir/95 text-scent-parchment overflow-hidden grain">
+        <div className="absolute inset-0 opacity-20">
           <Image src="/assets/valentino-meta.jpg" alt="" fill className="object-cover object-center" sizes="100vw" />
-          <div className="absolute inset-0 bg-scent-oudRose/50" />
+          <div className="absolute inset-0 bg-scent-noir/70" />
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-5 md:px-12 pt-32 pb-16 md:pb-20">

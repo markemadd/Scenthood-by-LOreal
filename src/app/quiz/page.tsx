@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import BottomNav from "@/components/BottomNav";
 import {
@@ -11,6 +12,7 @@ import {
   ScentProfile,
   BrandPerfume,
 } from "@/lib/data";
+import { imageFor } from "@/lib/brandImages";
 
 type Gender = "f" | "m" | "n";
 type AgeGroup = "young" | "mid" | "mature";
@@ -19,26 +21,6 @@ function getAgeGroup(age: number): AgeGroup {
   if (age < 30) return "young";
   if (age < 45) return "mid";
   return "mature";
-}
-
-// Family → visual identity
-const familyPalettes: Record<string, { bg: string; accent: string; glow: string; symbol: string; label: string }> = {
-  Floral:   { bg: "from-[#2A1520] to-[#1A1018]", accent: "#D4A5A5", glow: "rgba(212,165,165,0.18)", symbol: "✿", label: "Floral" },
-  Woody:    { bg: "from-[#1E1812] to-[#141008]", accent: "#C9A96E", glow: "rgba(201,169,110,0.18)", symbol: "✦", label: "Woody" },
-  Amber:    { bg: "from-[#231A0C] to-[#160F05]", accent: "#D4A060", glow: "rgba(212,160,96,0.2)",  symbol: "◈", label: "Amber" },
-  Citrus:   { bg: "from-[#1A1E10] to-[#101408]", accent: "#B8C46A", glow: "rgba(184,196,106,0.16)", symbol: "◉", label: "Citrus" },
-  Fresh:    { bg: "from-[#0E1A1E] to-[#080F14]", accent: "#7ABCCC", glow: "rgba(122,188,204,0.18)", symbol: "◇", label: "Fresh" },
-  Gourmand: { bg: "from-[#1E1010] to-[#140808]", accent: "#C97060", glow: "rgba(201,112,96,0.18)",  symbol: "✧", label: "Gourmand" },
-  Oriental: { bg: "from-[#18101E] to-[#100814]", accent: "#9070B8", glow: "rgba(144,112,184,0.18)", symbol: "◆", label: "Oriental" },
-  Aquatic:  { bg: "from-[#0C1620] to-[#080E18]", accent: "#60A0C8", glow: "rgba(96,160,200,0.16)",  symbol: "∿", label: "Aquatic" },
-  default:  { bg: "from-[#1A1A16] to-[#111110]", accent: "#A48B75", glow: "rgba(164,139,117,0.18)", symbol: "✦", label: "Fragrance" },
-};
-
-function getFamilyPalette(families: string[]) {
-  for (const f of families) {
-    if (familyPalettes[f]) return familyPalettes[f];
-  }
-  return familyPalettes.default;
 }
 
 function pickBrandPerfume(brandPerfs: BrandPerfume[], primaryFamily: string): BrandPerfume {
@@ -94,7 +76,7 @@ function ProfileStep({ gender, setGender, age, setAge, onNext }: {
         <div className="flex gap-2">
           {([{ val: "f" as Gender, label: "Woman" }, { val: "m" as Gender, label: "Man" }, { val: "n" as Gender, label: "Non-binary" }] as const).map((opt) => (
             <button key={opt.val} onClick={() => setGender(opt.val)}
-              className={`flex-1 py-3 text-sm font-bold border-2 border-scent-noir transition-all ${gender === opt.val ? "bg-scent-gold text-scent-noir" : "bg-scent-parchment text-scent-noir hover:bg-scent-alabaster"}`}>
+              className={`flex-1 py-3 text-sm font-bold border-2 border-scent-noir transition-all font-sans ${gender === opt.val ? "bg-scent-gold text-scent-noir" : "bg-scent-parchment text-scent-noir hover:bg-scent-alabaster"}`}>
               {opt.label}
             </button>
           ))}
@@ -104,48 +86,13 @@ function ProfileStep({ gender, setGender, age, setAge, onNext }: {
       <div className="mb-10">
         <div className="eyebrow mb-3">My age</div>
         <input type="number" min={13} max={100} placeholder="Enter your age" value={age} onChange={(e) => setAge(e.target.value)}
-          className="w-full border-2 border-scent-noir px-4 py-3 text-base text-scent-noir bg-scent-parchment focus:outline-none focus:bg-scent-alabaster font-medium placeholder:text-scent-noir/40" />
+          className="w-full border-2 border-scent-noir px-4 py-3 text-base text-scent-noir bg-scent-parchment focus:outline-none focus:bg-scent-alabaster font-medium placeholder:text-scent-noir/40 font-sans" />
       </div>
 
       <button onClick={onNext} disabled={!canContinue}
         className={`pill pill-gold text-[12px] w-full py-3 ${!canContinue ? "opacity-30 cursor-not-allowed" : ""}`}>
         Continue →
       </button>
-    </div>
-  );
-}
-
-// ── Elegant family-matched perfume visual ──
-function PerfumePlaceholder({ families, name }: { families: string[]; name: string }) {
-  const palette = getFamilyPalette(families);
-  return (
-    <div className={`w-full h-full bg-gradient-to-b ${palette.bg} flex flex-col items-center justify-center gap-3 relative overflow-hidden`}>
-      {/* Ambient rings */}
-      <motion.div
-        className="absolute rounded-full border opacity-10"
-        style={{ width: 120, height: 120, borderColor: palette.accent }}
-        animate={{ scale: [1, 1.15, 1], opacity: [0.08, 0.18, 0.08] }}
-        transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="absolute rounded-full border opacity-5"
-        style={{ width: 180, height: 180, borderColor: palette.accent }}
-        animate={{ scale: [1, 1.1, 1], opacity: [0.04, 0.1, 0.04] }}
-        transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}
-      />
-      {/* Symbol */}
-      <motion.div
-        className="font-serif text-5xl z-10"
-        style={{ color: palette.accent }}
-        animate={{ y: [0, -4, 0] }}
-        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-      >
-        {palette.symbol}
-      </motion.div>
-      {/* Family label */}
-      <div className="text-[9px] uppercase tracking-[0.25em] z-10" style={{ color: palette.accent + "99" }}>
-        {palette.label}
-      </div>
     </div>
   );
 }
@@ -179,127 +126,127 @@ export default function QuizPage() {
 
   // ── RESULT ──
   if (stage === "result" && identity) {
-    const palette = getFamilyPalette(identity.families);
+    const fragranceImage = imageFor(identity.recommendedFragrance, identity.favBrand ?? brandPref, 0);
 
     return (
-      <main className={`min-h-screen bg-gradient-to-b ${palette.bg} flex items-center justify-center px-5 py-12 relative overflow-hidden`}>
-        {/* Ambient radial glow */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full"
-            style={{ background: `radial-gradient(circle, ${palette.glow}, transparent 70%)` }} />
-        </div>
+      <main className="min-h-screen bg-scent-parchment">
+        {/* Dark header */}
+        <div className="bg-scent-noir text-scent-parchment px-5 pt-16 pb-12 text-center relative overflow-hidden grain">
+          <div className="relative z-10 max-w-xl mx-auto">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
+              className="eyebrow mb-5 text-scent-gold">Your Scent Identity</motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}
-          className="max-w-lg w-full relative z-10">
+            <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35, duration: 0.7 }}
+              className="display-xl text-scent-parchment mb-4">
+              {identity.identityTitle}
+            </motion.h1>
 
-          {/* Top accent line */}
-          <div className="h-px bg-champagne-gradient" />
+            <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ delay: 0.6, duration: 0.5 }}
+              className="w-12 h-px mx-auto mb-5 bg-champagne-gradient" />
 
-          {/* Dark hero section */}
-          <div className="px-8 pt-10 pb-8 text-center" style={{ background: "rgba(20,16,12,0.92)" }}>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
-              className="eyebrow mb-5" style={{ color: palette.accent }}>
-              Your Scent Identity
-            </motion.div>
-
-            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45, duration: 0.7 }}>
-              <h1 className="font-serif text-4xl md:text-5xl font-light text-white leading-tight mb-3">
-                {identity.identityTitle}
-              </h1>
-            </motion.div>
-
-            <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ delay: 0.7, duration: 0.6 }}
-              className="w-10 h-px mx-auto mb-5" style={{ background: palette.accent }} />
-
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.85 }}
-              className="text-white/60 text-sm leading-relaxed max-w-sm mx-auto">
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.75 }}
+              className="text-scent-parchment/70 text-sm leading-relaxed max-w-md mx-auto font-sans">
               {identity.identityDescription}
             </motion.p>
 
             {/* Mood tags */}
-            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.0 }}
+            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9 }}
               className="flex flex-wrap gap-2 justify-center mt-6">
               {identity.moods.map((mood, i) => (
-                <motion.span key={mood} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 1.1 + i * 0.07 }}
-                  className="text-[9px] uppercase tracking-[0.15em] px-3 py-1 border font-medium"
-                  style={{ borderColor: palette.accent + "40", color: palette.accent + "CC", background: palette.accent + "10" }}>
+                <motion.span key={mood} initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 1.0 + i * 0.07 }}
+                  className="text-[9px] uppercase tracking-[0.15em] px-3 py-1.5 border border-scent-gold/30 text-scent-gold/80 font-bold font-sans">
                   {mood}
                 </motion.span>
               ))}
             </motion.div>
           </div>
+        </div>
 
-          {/* Perfume recommendation */}
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.6 }}
-            className="bg-loreal-cream border-t border-loreal-border/40">
-            <div className="flex">
-              {/* Visual panel */}
-              <div className="w-36 h-48 flex-shrink-0 relative overflow-hidden">
-                <PerfumePlaceholder families={identity.families} name={identity.recommendedFragrance} />
-              </div>
-
-              {/* Details */}
-              <div className="flex-1 p-5 flex flex-col justify-center">
-                <div className="eyebrow mb-2 text-[9px]">Your L&apos;Oréal Luxe Match</div>
-                <div className="font-serif text-lg text-loreal-charcoal font-light leading-snug mb-2">
+        {/* Fragrance recommendation */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.7 }}
+          className="max-w-xl mx-auto px-5 -mt-6 relative z-10">
+          <div className="bg-scent-parchment border-2 border-scent-noir shadow-[0_6px_0_#0D0D0D]">
+            {/* Image */}
+            <div className="relative h-64 overflow-hidden">
+              <Image
+                src={fragranceImage}
+                alt={identity.recommendedFragrance}
+                fill
+                className="object-cover"
+                sizes="(min-width: 640px) 576px, 100vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-scent-noir/80 to-transparent" />
+              <div className="absolute bottom-4 left-5 right-5">
+                <div className="eyebrow text-scent-gold mb-1.5">Your L&apos;Oréal Luxe Match</div>
+                <div className="font-serif text-2xl text-scent-parchment font-light leading-tight">
                   {identity.recommendedFragrance}
                 </div>
-                {brandPref && (
-                  <div className="text-[10px] text-loreal-champagne uppercase tracking-[0.15em] font-medium mb-2">
-                    {brandPref}
+                {(identity.favBrand ?? brandPref) && (
+                  <div className="text-[10px] text-scent-gold uppercase tracking-[0.18em] font-bold font-sans mt-1">
+                    {identity.favBrand ?? brandPref}
                   </div>
                 )}
-                {identity.perfumeNotes && (
-                  <p className="text-[11px] text-loreal-muted leading-relaxed mb-3">{identity.perfumeNotes}</p>
-                )}
-                {/* Scent families */}
-                <div className="flex flex-wrap gap-1.5">
-                  {identity.families.map((f) => (
-                    <span key={f} className="text-[9px] uppercase tracking-[0.1em] px-2 py-0.5 bg-loreal-sand text-loreal-gold border border-loreal-champagne/30">
-                      {f}
-                    </span>
-                  ))}
-                </div>
               </div>
             </div>
-          </motion.div>
 
-          {/* Scent DNA bars */}
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }}
-            className="bg-loreal-white px-6 py-5 border-t border-loreal-border">
-            <div className="eyebrow mb-3 text-[9px]">Scent DNA</div>
-            <div className="space-y-2.5">
-              {identity.families.slice(0, 3).map((family, i) => {
-                const widths = [100, 65, 40];
-                return (
-                  <div key={family}>
-                    <div className="flex justify-between text-[10px] mb-1">
-                      <span className="text-loreal-slate font-medium">{family}</span>
-                      <span className="text-loreal-champagne">{widths[i]}%</span>
-                    </div>
-                    <div className="h-1 bg-loreal-border overflow-hidden">
-                      <motion.div className="h-full bg-loreal-champagne"
-                        initial={{ width: 0 }}
-                        animate={{ width: `${widths[i]}%` }}
-                        transition={{ duration: 1, delay: 1.0 + i * 0.15, ease: "easeOut" }} />
-                    </div>
-                  </div>
-                );
-              })}
+            {/* Notes & families */}
+            <div className="p-5">
+              {identity.perfumeNotes && (
+                <p className="text-sm text-scent-darkOud leading-relaxed mb-4 font-sans">{identity.perfumeNotes}</p>
+              )}
+              <div className="flex flex-wrap gap-2">
+                {identity.families.map((f) => (
+                  <span key={f} className="text-[9px] uppercase tracking-[0.12em] px-2.5 py-1 bg-scent-gold/15 text-scent-goldDark border border-scent-gold/30 font-bold font-sans">
+                    {f}
+                  </span>
+                ))}
+              </div>
             </div>
-          </motion.div>
 
-          {/* CTAs */}
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.1 }}
-            className="p-5 bg-loreal-white border-t border-loreal-border flex flex-col sm:flex-row gap-3">
-            <Link href="/signup" className="btn-primary text-sm flex-1 text-center">
-              Join SCENTHOOD →
-            </Link>
-            <Link href="/referral" className="btn-outline text-sm flex-1 text-center">
-              Share &amp; Get 15% Off
-            </Link>
-          </motion.div>
+            {/* Scent DNA bars */}
+            <div className="px-5 pb-5 border-t border-scent-noir/10 pt-4">
+              <div className="eyebrow mb-3 text-[9px]">Scent DNA</div>
+              <div className="space-y-3">
+                {identity.families.slice(0, 3).map((family, i) => {
+                  const widths = [100, 65, 40];
+                  return (
+                    <div key={family}>
+                      <div className="flex justify-between text-[10px] mb-1.5 font-sans">
+                        <span className="text-scent-noir font-semibold">{family}</span>
+                        <span className="text-scent-goldDark font-bold">{widths[i]}%</span>
+                      </div>
+                      <div className="h-1.5 bg-scent-alabaster overflow-hidden">
+                        <motion.div
+                          className="h-full bg-champagne-gradient"
+                          initial={{ width: 0 }}
+                          animate={{ width: `${widths[i]}%` }}
+                          transition={{ duration: 1, delay: 1.0 + i * 0.15, ease: "easeOut" }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* CTAs */}
+            <div className="p-5 border-t border-scent-noir/10 flex flex-col sm:flex-row gap-3">
+              <Link href="/signup" className="btn-primary text-sm flex-1 text-center">
+                Join SCENTHOOD →
+              </Link>
+              <Link href="/referral" className="btn-outline text-sm flex-1 text-center">
+                Share &amp; Get 15% Off
+              </Link>
+            </div>
+          </div>
+
+          <div className="text-center mt-8 pb-16">
+            <button onClick={() => { setStage("profile"); setStep(0); setAnswers({}); setGender(null); setAge(""); }}
+              className="text-[11px] uppercase tracking-[0.15em] text-loreal-muted hover:text-scent-noir transition-colors font-bold font-sans">
+              Retake quiz →
+            </button>
+          </div>
         </motion.div>
       </main>
     );
@@ -334,7 +281,7 @@ export default function QuizPage() {
             <Link href="/" className="logo-mark">S<span className="text-scent-gold">·</span>H</Link>
             <span className="eyebrow">Scent Identity Quiz</span>
           </div>
-          <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-scent-noir">{step + 1} / {quizQuestions.length}</span>
+          <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-scent-noir font-sans">{step + 1} / {quizQuestions.length}</span>
         </div>
         <div className="max-w-xl mx-auto mt-3">
           <div className="progress-rail">
@@ -351,7 +298,7 @@ export default function QuizPage() {
               exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.35 }}>
               <div className="eyebrow mb-4">Question {step + 1}</div>
               <h2 className="display-lg text-scent-noir mb-3">{currentQ.question}</h2>
-              <p className="text-scent-darkOud mb-8">{currentQ.hint}</p>
+              <p className="text-scent-darkOud mb-8 font-sans text-sm">{currentQ.hint}</p>
 
               <div className="space-y-2">
                 {currentQ.options.map((opt, oi) => {
@@ -363,14 +310,13 @@ export default function QuizPage() {
                       whileTap={{ scale: 0.99 }}
                       whileHover={{ x: 2 }}
                       className={`w-full flex items-center gap-4 p-4 border-2 transition-all text-left ${
-                        selected ? "border-scent-noir bg-scent-gold" : "border-scent-noir/20 bg-scent-parchment hover:border-scent-noir/60"
+                        selected ? "border-scent-noir bg-scent-gold/20" : "border-scent-noir/20 bg-scent-parchment hover:border-scent-noir/60"
                       }`}>
-                      <span className="text-xl w-8 text-center flex-shrink-0">{opt.icon}</span>
                       <div className="flex-1">
                         <div className="font-sans text-sm font-bold text-scent-noir">
                           {opt.label}
                         </div>
-                        <div className={`text-[11px] mt-0.5 ${selected ? "text-scent-noir/80" : "text-loreal-muted"}`}>{opt.description}</div>
+                        <div className={`text-[11px] mt-0.5 font-sans ${selected ? "text-scent-noir/80" : "text-loreal-muted"}`}>{opt.description}</div>
                       </div>
                       <div className={`w-5 h-5 border-2 border-scent-noir flex items-center justify-center flex-shrink-0 transition-all ${selected ? "bg-scent-noir text-scent-gold" : "bg-transparent"}`}>
                         {selected && <span className="text-[10px] font-bold">✓</span>}

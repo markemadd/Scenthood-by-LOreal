@@ -306,6 +306,7 @@ export default function HomePage() {
                 { href: "/community",    label: "Community" },
                 { href: "/vote",         label: "Votes" },
                 { href: "/intelligence", label: "Intelligence" },
+                { href: "/tiers",        label: "Tiers" },
                 { href: "/referral",     label: "Refer" },
                 { href: "/profile",      label: "Profile" },
               ].map((l) => (

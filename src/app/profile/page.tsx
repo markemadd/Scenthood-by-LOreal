@@ -94,7 +94,7 @@ export default function ProfilePage() {
   const lisTarget = tier === "Scenthooders" ? 999 : 1000;
 
   return (
-    <main className="min-h-screen bg-scent-parchment pb-28 md:pb-12">
+    <main className="min-h-screen bg-scent-parchment pb-16">
       <BottomNav />
 
       {/* === HERO === */}
@@ -105,13 +105,17 @@ export default function ProfilePage() {
         </div>
         <div className="relative z-10 max-w-7xl mx-auto px-5 md:px-12 pt-32 pb-16">
           <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-            <div className="eyebrow text-scent-gold mb-4">Account</div>
+            <div className="eyebrow text-scent-gold mb-4">Account · {tier}</div>
           </motion.div>
           <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
             className="display-hero text-scent-parchment leading-none">
-            About me.
+            {name.split(" ")[0]}.
           </motion.h1>
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }}
+            className="mt-4 text-scent-parchment/70 text-base max-w-md font-sans">
+            {lis} LIS · Member since {new Date(joinDate).toLocaleDateString("en-GB", { month: "long", year: "numeric" })}
+          </motion.p>
         </div>
       </section>
 
