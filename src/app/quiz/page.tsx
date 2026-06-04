@@ -241,7 +241,10 @@ export default function QuizPage() {
             </div>
           </div>
 
-          <div className="text-center mt-8 pb-16">
+          <div className="text-center mt-8 pb-16 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link href="/home" className="pill pill-noir text-[12px] px-6 py-2.5">
+              ← Back to Home
+            </Link>
             <button onClick={() => { setStage("profile"); setStep(0); setAnswers({}); setGender(null); setAge(""); }}
               className="text-[11px] uppercase tracking-[0.15em] text-loreal-muted hover:text-scent-noir transition-colors font-bold font-sans">
               Retake quiz →

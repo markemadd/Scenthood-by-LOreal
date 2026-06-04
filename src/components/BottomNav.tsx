@@ -101,7 +101,7 @@ export default function BottomNav() {
                     <Link
                       href={item.href}
                       onClick={() => setOpen(false)}
-                      className={`block font-serif text-5xl md:text-7xl font-light leading-tight transition-colors py-1 text-center ${
+                      className={`block font-serif text-3xl md:text-4xl font-light leading-tight transition-colors py-1 text-center ${
                         active
                           ? "text-scent-gold"
                           : "text-scent-parchment/60 hover:text-scent-parchment"
