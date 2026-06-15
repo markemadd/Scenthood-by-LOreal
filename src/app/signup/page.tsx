@@ -6,22 +6,36 @@ import Image from "next/image";
 import Link from "next/link";
 
 type Step = "method" | "social" | "details" | "done";
-type Platform = "instagram" | "facebook" | "email";
+type Platform = "meta" | "tiktok" | "email";
 
 const GENDER_OPTIONS = ["Woman", "Man", "Non-binary / Other", "Prefer not to say"];
 const AGE_RANGES = ["13–17", "18–24", "25–34", "35–44", "45–54", "55+"];
 
-function MetaIcon({ platform }: { platform: "instagram" | "facebook" }) {
-  if (platform === "instagram") {
+function SocialIcon({ platform }: { platform: "meta" | "tiktok" }) {
+  if (platform === "meta") {
     return (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+      <svg width="22" height="22" viewBox="0 0 287.5 191" fill="none" aria-label="Meta">
+        <defs>
+          <linearGradient id="meta-g1" x1="62.3" y1="139.5" x2="225.6" y2="121.7" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stopColor="#0064E1"/>
+            <stop offset="0.4" stopColor="#0064E1"/>
+            <stop offset="0.83" stopColor="#0073EE"/>
+            <stop offset="1" stopColor="#0082FB"/>
+          </linearGradient>
+          <linearGradient id="meta-g2" x1="42.6" y1="155.2" x2="42.6" y2="94.7" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stopColor="#0082FB"/>
+            <stop offset="1" stopColor="#0064E0"/>
+          </linearGradient>
+        </defs>
+        <path d="M31.1 126.7c0 11 2.4 19.5 5.6 24.6 4.2 6.8 10.4 9.6 16.8 9.6 8.2 0 15.7-2 30.2-22 11.6-16.1 25.3-38.6 34.5-52.8l15.6-23.9c10.8-16.6 23.3-35 37.6-47.5C183.1 4.5 195.7 0 208.4 0c21.3 0 41.6 12.4 57.1 35.5C282.6 60.8 290.9 92.7 290.9 125.6c0 19.6-3.9 34-10.5 45.3-6.3 11-18.6 21.9-39.3 21.9V161.9c17.7 0 22.1-16.3 22.1-35 0-26.6-6.2-56.1-19.9-77.2-9.7-15-22.3-24.1-36.1-24.1-15 0-27.1 11.3-40.6 31.5-7.2 10.7-14.6 23.8-22.9 38.6L135 110.4c-22.6 40.3-28.3 49.5-39.6 64.5-19.8 26.3-36.7 36.2-58.9 36.2-21.5 0-35.1-9.3-43.5-23.4C-13.8 176.3-17.4 161.4-17.4 144.4l48.5-17.7z" fill="#0081FB"/>
+        <path d="M20.8 39.1C35.2 16.9 56 1.4 79.9 1.4c13.8 0 27.5 4.1 41.8 15.8 15.6 12.8 32.3 33.9 53.1 68.7l7.5 12.5c18 30.1 28.3 45.6 34.3 52.9 7.7 9.3 13.1 12.1 20.1 12.1 17.7 0 22.1-16.3 22.1-35l42.7-1.3c0 19.6-3.9 34-10.5 45.3-6.3 11-18.6 21.9-39.3 21.9-12.9 0-24.3-2.8-36.9-14.7-9.7-9.1-21-25.3-29.7-39.8L160 100.8c-12.8-21.4-24.5-37.4-31.3-44.6-7.3-7.8-16.7-17.2-31.7-17.2-12.1 0-22.4 8.5-31 21.5L20.8 39.1z" fill="url(#meta-g1)"/>
+        <path d="M79.9 39c-12.1 0-22.4 8.5-31 21.5C36.7 79 29.3 106.6 29.3 132.9c0 11 2.4 19.5 5.6 24.6L-7.8 184.7C-13.8 176.3-17.4 161.4-17.4 144.4c0-30.4 8.3-62 24.2-86.4C20.8 36.7 39.7 16.5 67.3 8.8c4.2-1.2 8.4-2 12.6-2v32.2z" fill="url(#meta-g2)"/>
       </svg>
     );
   }
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-label="TikTok">
+      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V9.49a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.92Z"/>
     </svg>
   );
 }
@@ -102,7 +116,7 @@ export default function SignupPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-scent-noir/30 via-scent-noir/20 to-scent-noir/80" />
         <div className="relative z-10 h-full flex flex-col justify-between p-10">
           <div className="flex items-center gap-3">
-            <div className="logo-mark">S<span className="text-scent-gold">·</span>H</div>
+            <div className="logo-mark">S</div>
             <span className="eyebrow text-scent-gold">Brandstorm 2026</span>
           </div>
           <div>
@@ -119,7 +133,7 @@ export default function SignupPage() {
       <section className="flex flex-col min-h-screen">
         {/* Mobile header */}
         <div className="md:hidden border-b-2 border-scent-noir px-5 py-4 flex items-center gap-3">
-          <Link href="/" className="logo-mark">S<span className="text-scent-gold">·</span>H</Link>
+          <Link href="/" className="logo-mark">S</Link>
           <span className="eyebrow">Create Account</span>
         </div>
 
@@ -142,22 +156,22 @@ export default function SignupPage() {
                   sub="Connect with your existing social accounts for a seamless experience — or sign up with email." />
 
                 <div className="space-y-3 mb-6">
-                  <button onClick={() => { setPlatform("instagram"); setStep("social"); }}
+                  <button onClick={() => { setPlatform("meta"); setStep("social"); }}
                     className="w-full flex items-center gap-4 py-4 px-5 border-2 border-scent-noir bg-scent-parchment hover:bg-scent-alabaster transition-all text-left">
-                    <span className="text-[#E1306C]"><MetaIcon platform="instagram" /></span>
+                    <span className="text-[#0866FF]"><SocialIcon platform="meta" /></span>
                     <div className="flex-1">
-                      <div className="font-bold text-sm text-scent-noir">Continue with Instagram</div>
-                      <div className="text-[11px] text-loreal-muted">Share your reviews to your Stories</div>
+                      <div className="font-bold text-sm text-scent-noir">Continue with Meta</div>
+                      <div className="text-[11px] text-loreal-muted">Connect Instagram, Facebook & Threads in one tap</div>
                     </div>
                     <span className="text-scent-noir">→</span>
                   </button>
 
-                  <button onClick={() => { setPlatform("facebook"); setStep("social"); }}
+                  <button onClick={() => { setPlatform("tiktok"); setStep("social"); }}
                     className="w-full flex items-center gap-4 py-4 px-5 border-2 border-scent-noir bg-scent-parchment hover:bg-scent-alabaster transition-all text-left">
-                    <span className="text-[#1877F2]"><MetaIcon platform="facebook" /></span>
+                    <span className="text-scent-noir"><SocialIcon platform="tiktok" /></span>
                     <div className="flex-1">
-                      <div className="font-bold text-sm text-scent-noir">Continue with Facebook</div>
-                      <div className="text-[11px] text-loreal-muted">Sync your social graph with the community</div>
+                      <div className="font-bold text-sm text-scent-noir">Continue with TikTok</div>
+                      <div className="text-[11px] text-loreal-muted">Share your fragrance reviews to your feed</div>
                     </div>
                     <span className="text-scent-noir">→</span>
                   </button>
@@ -193,15 +207,15 @@ export default function SignupPage() {
             {step === "social" && (
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }}>
                 <StepHeader
-                  label={`${platform === "instagram" ? "Instagram" : platform === "facebook" ? "Facebook" : "Email"} · Step 2 of 3`}
-                  title={platform === "email" ? "Your email address." : `Connect ${platform === "instagram" ? "Instagram" : "Facebook"}.`}
+                  label={`${platform === "meta" ? "Meta" : platform === "tiktok" ? "TikTok" : "Email"} · Step 2 of 3`}
+                  title={platform === "email" ? "Your email address." : `Connect ${platform === "meta" ? "Meta" : "TikTok"}.`}
                   sub={platform === "email"
                     ? "We'll send you a verification link."
-                    : `Connecting ${platform} lets you share reviews and earn LIS directly from your ${platform} posts. We never post without your permission.`} />
+                    : `Connecting ${platform === "meta" ? "Meta" : "TikTok"} lets you share reviews and earn LIS directly from your posts. We never post without your permission.`} />
 
                 {platform !== "email" && (
                   <div className="border-2 border-scent-noir bg-scent-noir text-scent-parchment p-5 mb-6">
-                    <div className="eyebrow text-scent-gold mb-3">What we&apos;ll access via Meta API</div>
+                    <div className="eyebrow text-scent-gold mb-3">What we&apos;ll access via {platform === "meta" ? "Meta" : "TikTok"} API</div>
                     <ul className="space-y-1.5 text-[12px]">
                       {[
                         "✓  Your display name and profile photo",
@@ -225,7 +239,7 @@ export default function SignupPage() {
                   <button onClick={() => setStep("method")} className="pill pill-parchment text-[12px] px-6 py-2.5 flex-shrink-0">Back</button>
                   <button onClick={() => setStep("details")} disabled={!email.includes("@")}
                     className={`pill pill-gold text-[12px] flex-1 py-2.5 ${!email.includes("@") ? "opacity-30 cursor-not-allowed" : ""}`}>
-                    {platform !== "email" ? `Connect ${platform === "instagram" ? "Instagram" : "Facebook"} →` : "Continue →"}
+                    {platform !== "email" ? `Connect ${platform === "meta" ? "Meta" : "TikTok"} →` : "Continue →"}
                   </button>
                 </div>
               </motion.div>

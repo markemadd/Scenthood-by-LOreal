@@ -65,6 +65,7 @@ export default function TiersPage() {
             { w: "w-28", label: "Scentsetters", note: "100 globally", i: 0 },
             { w: "w-52", label: "Scentmakers", note: "50K globally", i: 1 },
             { w: "w-80", label: "Scenthooders", note: "500K globally", i: 2 },
+            { w: "w-[26rem]", label: "Friends · Tier 0", note: "Open to all", i: 3 },
           ].map((tier) => (
             <motion.div
               key={tier.label}
@@ -86,7 +87,49 @@ export default function TiersPage() {
         </div>
 
         {/* Tier Cards */}
-        <div className="grid md:grid-cols-3 gap-4">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Tier 0 — Friends (entry tier) */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="border border-loreal-border bg-white flex flex-col"
+          >
+            <div className="h-1" style={{ background: "linear-gradient(90deg, #d4af3780, #d4af37)" }} />
+            <div className="p-6 flex-1">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <div className="inline-block border border-loreal-border px-2.5 py-0.5 text-[9px] tracking-[0.12em] uppercase font-medium text-loreal-muted mb-2">
+                    Tier 0 · Entry
+                  </div>
+                  <h3 className="heading-sm leading-tight">Friends</h3>
+                  <p className="body-sm text-[11px] mt-0.5">The open door to SCENTHOOD</p>
+                </div>
+              </div>
+              <div className="text-[11px] champagne-text font-medium mb-4">Free · No LIS required</div>
+              <div className="eyebrow text-[9px] mb-3">What you get</div>
+              <ul className="space-y-1.5">
+                {[
+                  "Full access to community feed",
+                  "10% discount on first purchase",
+                  "Receive notifications for new launches",
+                  "Discover your Scent Identity",
+                ].map((label) => (
+                  <li key={label} className="flex items-start gap-3 py-2 px-3 border-l-2 border-transparent">
+                    <span className="text-loreal-champagne text-[10px] mt-0.5 flex-shrink-0">◆</span>
+                    <span className="body-sm text-[11px] leading-snug flex-1">{label}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="border-t border-loreal-border p-4">
+              <Link href="/quiz" className="btn-outline text-xs py-2.5 w-full text-center block">
+                Take the Scent Quiz →
+              </Link>
+              <div className="text-center text-[10px] text-loreal-muted mt-2">No card. No commitment. Just curiosity.</div>
+            </div>
+          </motion.div>
+
           {tierData.map((tier, i) => (
             <motion.div
               key={tier.name}

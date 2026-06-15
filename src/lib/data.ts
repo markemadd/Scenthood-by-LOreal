@@ -137,6 +137,7 @@ export interface FeedPost {
   timestamp: string;
   tags: string[];
   aspectRatio: "tall" | "wide" | "square";
+  mediaUrl?: string;
 }
 
 export interface Review {
@@ -294,22 +295,25 @@ export const feedPosts: FeedPost[] = [
     caption: "Jazz Club doesn't just smell like a jazz club. It smells like the specific memory of being 22 and feeling the future open up in front of you. Watch to the end.",
     likes: 1847, saves: 412, comments: 89, ccsEarned: 120, timestamp: "2h ago",
     tags: ["WoodyAmber", "ReplicaCollection", "MaisonMargiela"], aspectRatio: "tall",
+    mediaUrl: "/assets/margiela.mp4",
   },
   {
     id: "fp2", userId: "u2", userName: "Lucas Andersson", userAvatar: "LA", userLocation: "Stockholm",
-    userTier: "Scentmaker", type: "photo", fragranceName: "YSL Libre", brand: "YSL Beauté",
+    userTier: "Scentmaker", type: "video", fragranceName: "YSL Libre", brand: "YSL Beauté",
     thumbnailColor: "from-rose-800 to-neutral-900",
     caption: "Libre is what freedom smells like if freedom wore a blazer. The lavender-vanilla tension is extraordinary — and it lasts. 9 hours on my skin today.",
     likes: 643, saves: 218, comments: 34, ccsEarned: 60, timestamp: "5h ago",
     tags: ["YSLLibre", "FloralMusk", "Longevity"], aspectRatio: "square",
+    mediaUrl: "/assets/ysl.mp4",
   },
   {
     id: "fp3", userId: "u1", userName: "Isabelle Moreau", userAvatar: "IM", userLocation: "Paris",
-    userTier: "Scenthooders", type: "video", fragranceName: "Lancôme La Vie Est Belle", brand: "Lancôme",
+    userTier: "Scenthooders", type: "photo", fragranceName: "Lancôme La Vie Est Belle", brand: "Lancôme",
     thumbnailColor: "from-pink-700 to-purple-900",
     caption: "Get ready with me — the full morning routine, and why La Vie Est Belle is the perfect opener. Three sprays max. Never more.",
     likes: 2241, saves: 884, comments: 156, ccsEarned: 120, timestamp: "8h ago",
     tags: ["GRWM", "Lancome", "GourmandIris"], aspectRatio: "tall",
+    mediaUrl: "/assets/lancome-new.webp",
   },
   {
     id: "fp4", userId: "u3", userName: "Yuki Tanaka", userAvatar: "YT", userLocation: "Tokyo",
@@ -318,22 +322,34 @@ export const feedPosts: FeedPost[] = [
     caption: "Paradoxe is floral but it doesn't know it. The amber base turns it into something structural, almost architectural. Prada gets it.",
     likes: 918, saves: 302, comments: 67, ccsEarned: 60, timestamp: "12h ago",
     tags: ["PradaParadoxe", "FloralWoody", "CoutureFrag"], aspectRatio: "wide",
+    mediaUrl: "/assets/prada-new.webp",
   },
   {
     id: "fp5", userId: "u2", userName: "Lucas Andersson", userAvatar: "LA", userLocation: "Stockholm",
-    userTier: "Scentmaker", type: "text", fragranceName: "Mugler Angel", brand: "Mugler",
+    userTier: "Scentmaker", type: "video", fragranceName: "Mugler Angel", brand: "Mugler",
     thumbnailColor: "from-blue-900 to-indigo-900",
     caption: "Angel is 1992 calling. The patchouli-chocolate combination should not work, and yet it is the most iconic fragrance ever made. A masterclass in rule-breaking.",
     likes: 447, saves: 129, comments: 52, ccsEarned: 40, timestamp: "1d ago",
     tags: ["MuglerAngel", "Gourmand", "90sFragrance"], aspectRatio: "square",
+    mediaUrl: "/assets/mugler.mp4",
   },
   {
     id: "fp6", userId: "u1", userName: "Isabelle Moreau", userAvatar: "IM", userLocation: "Paris",
-    userTier: "Scenthooders", type: "video", fragranceName: "Valentino Born in Roma", brand: "Valentino",
+    userTier: "Scenthooders", type: "photo", fragranceName: "Valentino Born in Roma", brand: "Valentino",
     thumbnailColor: "from-red-900 to-neutral-800",
     caption: "I tested Born in Roma for 5 days in 5 different cities. Here's what I found. This one surprised me most in humidity — the jasmine became almost edible.",
     likes: 3102, saves: 1120, comments: 234, ccsEarned: 120, timestamp: "2d ago",
     tags: ["ValentinoBornInRoma", "FloralAmber", "TravelReview"], aspectRatio: "tall",
+    mediaUrl: "/assets/valentino-new.webp",
+  },
+  {
+    id: "fp7", userId: "u-layla", userName: "Layla · @laylascents", userAvatar: "LA", userLocation: "Laylascents",
+    userTier: "Scentsetters", type: "video", fragranceName: "YSL Libre", brand: "YSL Beauté",
+    thumbnailColor: "from-rose-900 to-stone-900",
+    caption: "First impressions of YSL Libre — recorded the moment I opened the box. The lavender-orange blossom opening is sharper than expected, then it softens into something almost edible.",
+    likes: 1289, saves: 367, comments: 78, ccsEarned: 120, timestamp: "3d ago",
+    tags: ["YSLLibre", "Laylascents", "FirstImpression"], aspectRatio: "tall",
+    mediaUrl: "/assets/review-video.mp4",
   },
 ];
 

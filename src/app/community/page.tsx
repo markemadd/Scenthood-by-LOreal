@@ -35,13 +35,17 @@ function FeedCard({ post, idx, isUser }: { post: UserPost; idx: number; isUser?:
                 : post.aspectRatio === "wide" ? "aspect-[4/3]"
                 : "aspect-square";
   const usingUpload = !!post.imageDataUrl;
-  const img = post.imageDataUrl ?? imageFor(post.fragranceName, post.brand, idx);
+  const img = post.imageDataUrl ?? post.mediaUrl ?? imageFor(post.fragranceName, post.brand, idx);
+  const isVideo = /\.(mp4|webm|mov)$/i.test(img);
 
   return (
     <FadeUp delay={(idx % 6) * 0.04}>
       <div className="break-inside-avoid mb-5 group">
         <div className={`relative ${aspect} overflow-hidden bg-scent-darkOud`}>
-          {usingUpload ? (
+          {isVideo ? (
+            <video src={img} autoPlay loop muted playsInline
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+          ) : usingUpload ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={img} alt={post.fragranceName} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
           ) : (
@@ -49,7 +53,7 @@ function FeedCard({ post, idx, isUser }: { post: UserPost; idx: number; isUser?:
               className="object-cover transition-transform duration-700 group-hover:scale-105"
               sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" />
           )}
-          {post.type === "video" && (
+          {post.type === "video" && !isVideo && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <div className="w-12 h-12 rounded-full bg-scent-parchment/15 backdrop-blur-md border border-scent-parchment/40 flex items-center justify-center">
                 <div className="w-0 h-0 border-y-[7px] border-l-[12px] border-y-transparent border-l-scent-parchment ml-1" />

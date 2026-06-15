@@ -261,7 +261,7 @@ export default function QuizPage() {
       <main className="min-h-screen bg-scent-parchment flex flex-col">
         <div className="border-b-2 border-scent-noir px-5 py-4">
           <div className="max-w-xl mx-auto flex items-center gap-3">
-            <Link href="/" className="logo-mark">S<span className="text-scent-gold">·</span>H</Link>
+            <Link href="/" className="logo-mark">S</Link>
             <span className="eyebrow">Scent Identity Quiz</span>
           </div>
           <div className="max-w-xl mx-auto mt-3">
@@ -281,7 +281,7 @@ export default function QuizPage() {
       <div className="border-b-2 border-scent-noir px-5 py-4">
         <div className="max-w-xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link href="/" className="logo-mark">S<span className="text-scent-gold">·</span>H</Link>
+            <Link href="/" className="logo-mark">S</Link>
             <span className="eyebrow">Scent Identity Quiz</span>
           </div>
           <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-scent-noir font-sans">{step + 1} / {quizQuestions.length}</span>

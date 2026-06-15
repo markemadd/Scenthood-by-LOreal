@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import BottomNav from "@/components/BottomNav";
 import TierBadge from "@/components/TierBadge";
-import { reviews, accordVotes, communityStats } from "@/lib/data";
+import { reviews, accordVotes, communityStats, feedPosts } from "@/lib/data";
 import { imageFor, PILOT_BRAND_CARDS } from "@/lib/brandImages";
 
 const TICKER = [
@@ -74,19 +74,22 @@ export default function HomePage() {
       <BottomNav />
 
       {/* === HERO === */}
-      <div ref={heroRef} className="relative h-screen min-h-[640px] w-full overflow-hidden bg-scent-noir grain">
-        <motion.div style={{ y: heroY, opacity: heroOp }} className="absolute inset-0">
-          <Image src="/assets/home-page.jpg" alt="" fill priority
-            className="object-cover object-center"
-            sizes="100vw" />
-          <div className="absolute inset-0 bg-gradient-to-b from-scent-noir/30 via-scent-noir/20 to-scent-noir/80" />
-        </motion.div>
+      <div ref={heroRef} className="relative md:h-screen md:min-h-[640px] w-full overflow-hidden bg-scent-noir grain">
+        {/* Mobile: full-bleed square image at top, no crop */}
+        <div className="relative w-full aspect-square md:absolute md:inset-0 md:aspect-auto">
+          <motion.div style={{ y: heroY, opacity: heroOp }} className="absolute inset-0">
+            <Image src="/assets/home-hero-new.png" alt="" fill priority
+              className="object-cover"
+              sizes="100vw" />
+            <div className="absolute inset-0 bg-gradient-to-b from-scent-noir/0 via-transparent to-scent-noir/40 md:from-scent-noir/20 md:to-scent-noir/80" />
+          </motion.div>
+        </div>
 
         {/* Hero content */}
-        <div className="relative z-10 h-full flex flex-col">
-          <div className="pt-24 md:pt-32" />
+        <div className="relative z-10 md:absolute md:inset-0 flex flex-col">
+          <div className="hidden md:block pt-24 md:pt-32" />
 
-          <div className="flex-1 flex flex-col justify-end px-5 md:px-12 pb-12 md:pb-20 max-w-7xl mx-auto w-full">
+          <div className="md:flex-1 flex flex-col justify-end px-5 md:px-12 pt-8 md:pt-0 pb-12 md:pb-20 max-w-7xl mx-auto w-full">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}>
               <div className="eyebrow text-scent-gold mb-4 md:mb-6">Brandstorm 2026 · L&apos;Oréal Luxe</div>
@@ -208,31 +211,40 @@ export default function HomePage() {
           </FadeUp>
 
           <div className="mt-10 md:mt-16 grid md:grid-cols-2 gap-6">
-            {reviews.slice(0, 4).map((review, i) => (
-              <FadeUp key={review.id} delay={i * 0.07}>
-                <Link href="/community" className="block group">
-                  <div className="relative aspect-[4/5] overflow-hidden bg-scent-darkOud">
-                    <Image
-                      src={imageFor(review.fragranceName, undefined, i)}
-                      alt={review.fragranceName} fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
-                      sizes="(min-width: 768px) 45vw, 100vw"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-scent-noir/85 via-transparent to-transparent" />
-                    <div className="absolute bottom-0 left-0 right-0 p-6">
-                      <div className="text-scent-gold text-[10px] font-bold tracking-[0.2em] uppercase mb-2">{review.fragranceName}</div>
-                      <h3 className="display-md text-scent-parchment leading-tight">{review.excerpt.substring(0, 60)}…</h3>
-                      <div className="mt-3 flex items-center gap-2 text-scent-parchment/70 text-[11px]">
-                        <span>{review.userName}</span>
-                        <TierBadge tier={review.userTier} />
-                        <span>·</span>
-                        <span>{review.timestamp}</span>
+            {feedPosts.slice(0, 4).map((post, i) => {
+              const src = post.mediaUrl ?? imageFor(post.fragranceName, post.brand, i);
+              const isVideo = /\.(mp4|webm|mov)$/i.test(src);
+              return (
+                <FadeUp key={post.id} delay={i * 0.07}>
+                  <Link href="/community" className="block group">
+                    <div className="relative aspect-[4/5] overflow-hidden bg-scent-darkOud">
+                      {isVideo ? (
+                        <video src={src} autoPlay loop muted playsInline
+                          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                      ) : (
+                        <Image
+                          src={src}
+                          alt={post.fragranceName} fill
+                          className="object-cover transition-transform duration-700 group-hover:scale-105"
+                          sizes="(min-width: 768px) 45vw, 100vw"
+                        />
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-scent-noir/85 via-transparent to-transparent" />
+                      <div className="absolute bottom-0 left-0 right-0 p-6">
+                        <div className="text-scent-gold text-[10px] font-bold tracking-[0.2em] uppercase mb-2">{post.fragranceName}</div>
+                        <h3 className="display-md text-scent-parchment leading-tight">{post.caption.substring(0, 60)}…</h3>
+                        <div className="mt-3 flex items-center gap-2 text-scent-parchment/70 text-[11px]">
+                          <span>{post.userName}</span>
+                          <TierBadge tier={post.userTier} />
+                          <span>·</span>
+                          <span>{post.timestamp}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Link>
-              </FadeUp>
-            ))}
+                  </Link>
+                </FadeUp>
+              );
+            })}
           </div>
 
           <FadeUp delay={0.4}>
