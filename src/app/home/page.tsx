@@ -6,8 +6,9 @@ import Image from "next/image";
 import Link from "next/link";
 import BottomNav from "@/components/BottomNav";
 import TierBadge from "@/components/TierBadge";
-import { reviews, accordVotes, communityStats, feedPosts } from "@/lib/data";
+import { reviews, accordVotes, communityStats, feedPosts, FeedPost } from "@/lib/data";
 import { imageFor, PILOT_BRAND_CARDS } from "@/lib/brandImages";
+import { supabase, dbPostToFeedPost, DbPost } from "@/lib/supabase";
 
 const TICKER = [
   "Sophie L. just joined from Paris",
@@ -63,6 +64,22 @@ export default function HomePage() {
   const heroOp = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
   const [voted, setVoted] = useState<"A" | "B" | null>(null);
+  const [livePosts, setLivePosts] = useState<(FeedPost & { mediaUrl?: string })[] | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase
+        .from("posts")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(4);
+      if (cancelled || error || !data) return;
+      setLivePosts((data as DbPost[]).map(dbPostToFeedPost));
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
   const featuredVote = accordVotes[0];
   const total = featuredVote.totalVotes + (voted ? 1 : 0);
   const aVotes = featuredVote.optionAVotes + (voted === "A" ? 1 : 0);
@@ -211,7 +228,7 @@ export default function HomePage() {
           </FadeUp>
 
           <div className="mt-10 md:mt-16 grid md:grid-cols-2 gap-6">
-            {feedPosts.slice(0, 4).map((post, i) => {
+            {(livePosts ?? feedPosts.slice(0, 4)).map((post, i) => {
               const src = post.mediaUrl ?? imageFor(post.fragranceName, post.brand, i);
               const isVideo = /\.(mp4|webm|mov)$/i.test(src);
               return (

@@ -7,9 +7,9 @@ import BottomNav from "@/components/BottomNav";
 import TierBadge from "@/components/TierBadge";
 import { feedPosts as seedFeedPosts, ccsEarning, FeedPost, lorealLuxeBrands, brandPerfumeCatalog } from "@/lib/data";
 import { imageFor } from "@/lib/brandImages";
+import { supabase, POST_MEDIA_BUCKET, dbPostToFeedPost, DbPost } from "@/lib/supabase";
 
 const FILTERS = ["All", "Video", "Photo", "Text"];
-const STORAGE_KEY = "scenthood_user_posts";
 
 interface UserPost extends FeedPost {
   imageDataUrl?: string;
@@ -143,8 +143,11 @@ function CreateModal({ open, onClose, onPost }: {
   const [brand, setBrand] = useState("YSL Beauté");
   const [fragranceName, setFragranceName] = useState("YSL Libre");
   const [caption, setCaption] = useState("");
-  const [imageDataUrl, setImageDataUrl] = useState<string | undefined>(undefined);
+  const [displayName, setDisplayName] = useState("");
+  const [mediaFile, setMediaFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | undefined>(undefined);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Build fragrance options from catalog for the chosen brand
   const brandKey = brand;
@@ -165,42 +168,69 @@ function CreateModal({ open, onClose, onPost }: {
 
   const handleFile = (file: File | null) => {
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => setImageDataUrl(reader.result as string);
-    reader.readAsDataURL(file);
+    setMediaFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
   };
 
-  const handleSubmit = () => {
+  const initialsOf = (name: string) =>
+    name.trim().split(/\s+/).map((w) => w[0]?.toUpperCase() ?? "").join("").slice(0, 2) || "ME";
+
+  const handleSubmit = async () => {
+    setError(null);
     if (!caption.trim()) return;
-    if (type === "photo" && !imageDataUrl) return;
+    if ((type === "photo" || type === "video") && !mediaFile) return;
     setSubmitting(true);
-    const ccs = type === "video" ? ccsEarning.videoReview
-             : type === "photo" ? ccsEarning.photoReview
-             : ccsEarning.textReview;
-    const post: UserPost = {
-      id: `up-${Date.now()}`,
-      userId: "me",
-      userName: "You",
-      userAvatar: "ME",
-      userLocation: "Just now",
-      userTier: "Scenthooders",
-      type,
-      fragranceName,
-      brand,
-      thumbnailColor: "from-stone-700 to-stone-900",
-      caption: caption.trim(),
-      likes: 0, saves: 0, comments: 0,
-      ccsEarned: ccs,
-      timestamp: "now",
-      tags: [brand.replace(/\s+/g, ""), fragranceName.replace(/\s+/g, "")],
-      aspectRatio: "tall",
-      imageDataUrl,
-    };
-    onPost(post);
-    // reset
-    setTimeout(() => {
-      setCaption(""); setImageDataUrl(undefined); setSubmitting(false); onClose();
-    }, 350);
+
+    try {
+      let mediaUrl: string | null = null;
+
+      if (mediaFile) {
+        const ext = mediaFile.name.split(".").pop()?.toLowerCase() ?? "bin";
+        const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+        const { error: upErr } = await supabase.storage
+          .from(POST_MEDIA_BUCKET)
+          .upload(path, mediaFile, { contentType: mediaFile.type, upsert: false });
+        if (upErr) throw upErr;
+        const { data: pub } = supabase.storage.from(POST_MEDIA_BUCKET).getPublicUrl(path);
+        mediaUrl = pub.publicUrl;
+      }
+
+      const ccs = type === "video" ? ccsEarning.videoReview
+               : type === "photo" ? ccsEarning.photoReview
+               : ccsEarning.textReview;
+
+      const userName = displayName.trim() || "Anonymous Scenthooder";
+
+      const { data, error: insErr } = await supabase
+        .from("posts")
+        .insert({
+          user_name: userName,
+          user_avatar: initialsOf(userName),
+          user_tier: "Scenthooders",
+          user_location: "Just now",
+          type,
+          fragrance_name: fragranceName,
+          brand,
+          caption: caption.trim(),
+          media_url: mediaUrl,
+          aspect_ratio: "tall",
+          ccs_earned: ccs,
+          tags: [brand.replace(/\s+/g, ""), fragranceName.replace(/\s+/g, "")],
+        })
+        .select("*")
+        .single();
+
+      if (insErr) throw insErr;
+      onPost(dbPostToFeedPost(data as DbPost) as UserPost);
+
+      setCaption(""); setMediaFile(null); setPreviewUrl(undefined);
+      onClose();
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Something went wrong. Try again.";
+      setError(msg);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -265,18 +295,32 @@ function CreateModal({ open, onClose, onPost }: {
                   )}
                 </div>
 
-                {/* Image upload (photo/video) */}
+                {/* Display name */}
+                <div>
+                  <label className="eyebrow mb-2 block">Your name</label>
+                  <input value={displayName} onChange={(e) => setDisplayName(e.target.value)}
+                    placeholder="Anonymous Scenthooder"
+                    className="w-full border-2 border-scent-noir bg-scent-parchment px-4 py-3 text-sm font-medium focus:outline-none focus:bg-scent-alabaster" />
+                </div>
+
+                {/* Media upload (photo/video) */}
                 {(type === "photo" || type === "video") && (
                   <div>
-                    <label className="eyebrow mb-2 block">Upload image</label>
+                    <label className="eyebrow mb-2 block">Upload {type}</label>
                     <label className="cursor-pointer block">
-                      <input type="file" accept="image/*"
+                      <input type="file"
+                        accept={type === "video" ? "video/*" : "image/*"}
                         onChange={(e) => handleFile(e.target.files?.[0] ?? null)}
                         className="hidden" />
                       <div className="border-2 border-dashed border-scent-noir bg-scent-alabaster/40 aspect-[4/3] flex items-center justify-center text-center text-scent-noir/60 hover:bg-scent-alabaster/70 transition-colors relative overflow-hidden">
-                        {imageDataUrl ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img src={imageDataUrl} alt="" className="absolute inset-0 w-full h-full object-cover" />
+                        {previewUrl ? (
+                          type === "video" ? (
+                            <video src={previewUrl} autoPlay loop muted playsInline
+                              className="absolute inset-0 w-full h-full object-cover" />
+                          ) : (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={previewUrl} alt="" className="absolute inset-0 w-full h-full object-cover" />
+                          )
                         ) : (
                           <div>
                             <div className="text-4xl mb-2">+</div>
@@ -304,8 +348,14 @@ function CreateModal({ open, onClose, onPost }: {
                   </div>
                 </div>
 
+                {error && (
+                  <div className="text-[11px] text-scent-oudRose border border-scent-oudRose/40 bg-scent-oudRose/5 px-3 py-2">
+                    {error}
+                  </div>
+                )}
+
                 <button onClick={handleSubmit}
-                  disabled={submitting || !caption.trim() || ((type === "photo" || type === "video") && !imageDataUrl)}
+                  disabled={submitting || !caption.trim() || ((type === "photo" || type === "video") && !mediaFile)}
                   className="w-full pill pill-gold text-[12px] py-3 disabled:opacity-40 disabled:cursor-not-allowed">
                   {submitting ? "Posting…" : "Post to feed →"}
                 </button>
@@ -346,24 +396,31 @@ export default function CommunityPage() {
   const [typeFilter, setTypeFilter] = useState("All");
   const [showEarning, setShowEarning] = useState(false);
   const [createOpen, setCreateOpen] = useState(false);
-  const [userPosts, setUserPosts] = useState<UserPost[]>([]);
+  const [dbPosts, setDbPosts] = useState<UserPost[] | null>(null);
 
-  // Load user posts from localStorage
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setUserPosts(JSON.parse(raw));
-    } catch {}
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase
+        .from("posts")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (cancelled) return;
+      if (error || !data) {
+        setDbPosts([]);
+        return;
+      }
+      setDbPosts((data as DbPost[]).map(dbPostToFeedPost) as UserPost[]);
+    })();
+    return () => { cancelled = true; };
   }, []);
 
   const handleNewPost = (p: UserPost) => {
-    const next = [p, ...userPosts];
-    setUserPosts(next);
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch {}
+    setDbPosts((curr) => [p, ...(curr ?? [])]);
   };
 
-  // Combine user posts (newest first) + seed posts
-  const allPosts: UserPost[] = [...userPosts, ...seedFeedPosts];
+  // While loading: show seeds as a placeholder. After load: show only DB.
+  const allPosts: UserPost[] = dbPosts ?? (seedFeedPosts as UserPost[]);
   const filtered = allPosts.filter((p) =>
     typeFilter === "All" ? true : p.type === typeFilter.toLowerCase()
   );
