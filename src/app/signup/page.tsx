@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -79,7 +79,7 @@ function generateOAuthUrl(platform: "meta" | "tiktok"): string {
   }
 }
 
-export default function SignupPage() {
+function SignupPageInner() {
   const searchParams = useSearchParams();
   const [step, setStep] = useState<Step>("method");
   const [platform, setPlatform] = useState<Platform | null>(null);
@@ -402,5 +402,13 @@ export default function SignupPage() {
         </div>
       </section>
     </main>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-scent-parchment" />}>
+      <SignupPageInner />
+    </Suspense>
   );
 }
