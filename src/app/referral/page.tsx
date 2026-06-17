@@ -1,16 +1,23 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import BottomNav from "@/components/BottomNav";
+import { users } from "@/lib/data";
+import { fetchReferrals, DbReferral, REFERRAL_LIS_REWARD } from "@/lib/supabase";
 
-const MOCK_USER = { name: "Isabelle Moreau", initials: "IM", code: "SCENT-IM-4821" };
-const MOCK_REFERRALS = [
-  { name: "Sophie L.", joined: "3 days ago" },
-  { name: "Marc D.",   joined: "1 week ago" },
-];
+const _MOCK = users[1];
+const MOCK_USER = {
+  name: _MOCK.name,
+  initials: _MOCK.avatar,
+  code: `SCENT-${_MOCK.avatar}-4821`,
+};
+
+function getInitials(name: string) {
+  return name.trim().split(/\s+/).map((w) => w[0]?.toUpperCase() ?? "").join("").slice(0, 2) || "SC";
+}
 const MILESTONES = [
   { count: 1,  reward: "15% off your next purchase",                       icon: "◈" },
   { count: 3,  reward: "Exclusive 5 ml sample set (3 scents)",            icon: "✦" },
@@ -33,8 +40,29 @@ function FadeUp({ children, delay = 0 }: { children: React.ReactNode; delay?: nu
 
 export default function ReferralPage() {
   const [copied, setCopied] = useState(false);
-  const referralCount = MOCK_REFERRALS.length;
-  const shareLink = `https://scenthood.com/join?ref=${MOCK_USER.code}`;
+  const [user, setUser] = useState(MOCK_USER);
+  const [liveReferrals, setLiveReferrals] = useState<DbReferral[] | null>(null);
+
+  useEffect(() => {
+    let code = MOCK_USER.code;
+    try {
+      const raw = localStorage.getItem("scenthood_user");
+      if (raw) {
+        const stored = JSON.parse(raw);
+        const name = stored.name || MOCK_USER.name;
+        const initials = getInitials(name);
+        code = stored.referralCode || `SCENT-${initials}-${Math.floor(1000 + Math.random() * 9000)}`;
+        setUser({ name, initials, code });
+      }
+    } catch {}
+
+    // Fetch live referrals from Supabase
+    fetchReferrals(code).then(setLiveReferrals);
+  }, []);
+
+  const referralCount = liveReferrals?.length ?? 0;
+  const lisEarned = referralCount * REFERRAL_LIS_REWARD;
+  const shareLink = `https://scenthood.com/join?ref=${user.code}`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(shareLink).catch(() => {});
@@ -78,15 +106,15 @@ export default function ReferralPage() {
         <FadeUp>
           <div className="bg-scent-parchment border-2 border-scent-noir p-6 md:p-8 shadow-[0_8px_0_var(--noir)]">
             <div className="flex items-center gap-3 mb-6">
-              <div className="logo-mark">{MOCK_USER.initials}</div>
+              <div className="logo-mark">{user.initials}</div>
               <div>
-                <div className="font-bold text-scent-noir">{MOCK_USER.name}</div>
+                <div className="font-bold text-scent-noir">{user.name}</div>
                 <div className="eyebrow">Your referral code</div>
               </div>
             </div>
 
             <div className="bg-scent-noir text-scent-parchment px-5 py-4 flex items-center justify-between mb-3">
-              <span className="font-mono text-base tracking-[0.15em] font-bold">{MOCK_USER.code}</span>
+              <span className="font-mono text-base tracking-[0.15em] font-bold">{user.code}</span>
               <button onClick={handleCopy}
                 className="text-[10px] uppercase tracking-[0.2em] text-scent-gold font-bold hover:text-scent-parchment transition-colors">
                 {copied ? "Copied ✓" : "Copy"}
@@ -119,7 +147,7 @@ export default function ReferralPage() {
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-2">
                 <div className="eyebrow text-scent-gold">Your Progress</div>
-                <span className="font-display text-base text-scent-parchment">{referralCount} / 10</span>
+                <span className="font-display text-base text-scent-parchment">{liveReferrals === null ? "…" : referralCount} / 10</span>
               </div>
 
               <div className="progress-rail mb-6 h-1 bg-scent-parchment/15">
@@ -152,29 +180,44 @@ export default function ReferralPage() {
           </div>
         </FadeUp>
 
-        {/* === FRIENDS === */}
-        {MOCK_REFERRALS.length > 0 && (
-          <FadeUp delay={0.15}>
-            <div className="mt-10 bg-scent-parchment border border-scent-noir/10">
-              <div className="px-6 py-4 border-b border-scent-noir/10">
-                <div className="eyebrow">Friends who joined</div>
+        {/* === LIVE REFERRALS === */}
+        <FadeUp delay={0.15}>
+          <div className="mt-10 bg-scent-parchment border border-scent-noir/10">
+            <div className="px-6 py-4 border-b border-scent-noir/10 flex items-center justify-between">
+              <div className="eyebrow">Friends who joined</div>
+              {referralCount > 0 && (
+                <div className="text-[11px] font-bold text-scent-gold">+{lisEarned} LIS earned</div>
+              )}
+            </div>
+            {liveReferrals === null ? (
+              <div className="px-6 py-6 text-[12px] text-loreal-muted animate-pulse">Loading…</div>
+            ) : liveReferrals.length === 0 ? (
+              <div className="px-6 py-8 text-center">
+                <div className="text-[13px] text-scent-noir/50 font-medium mb-1">No referrals yet</div>
+                <div className="text-[11px] text-loreal-muted">Share your code — each friend who joins earns you +{REFERRAL_LIS_REWARD} LIS instantly.</div>
               </div>
+            ) : (
               <div>
-                {MOCK_REFERRALS.map((r) => (
-                  <div key={r.name} className="px-6 py-4 border-b last:border-b-0 border-scent-noir/10 flex items-center justify-between">
+                {liveReferrals.map((r) => (
+                  <div key={r.id} className="px-6 py-4 border-b last:border-b-0 border-scent-noir/10 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 bg-scent-noir text-scent-gold flex items-center justify-center text-[10px] font-display rounded-full">
-                        {r.name.split(" ").map((n) => n[0]).join("")}
+                        {r.referred_name.split(" ").map((n: string) => n[0]).join("").slice(0, 2)}
                       </div>
-                      <span className="text-sm font-medium text-scent-noir">{r.name}</span>
+                      <div>
+                        <span className="text-sm font-medium text-scent-noir">{r.referred_name}</span>
+                        <div className="text-[10px] text-loreal-muted">+{r.lis_awarded} LIS awarded to you</div>
+                      </div>
                     </div>
-                    <span className="text-[10px] text-loreal-muted">{r.joined}</span>
+                    <span className="text-[10px] text-loreal-muted">
+                      {new Date(r.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
+                    </span>
                   </div>
                 ))}
               </div>
-            </div>
-          </FadeUp>
-        )}
+            )}
+          </div>
+        </FadeUp>
 
         {/* === CTA === */}
         <FadeUp delay={0.2}>

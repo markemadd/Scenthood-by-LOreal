@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { createProfile, getProfileByReferralCode, recordReferral } from "@/lib/supabase";
 
 type Step = "method" | "social" | "details" | "done";
 type Platform = "meta" | "tiktok" | "email";
@@ -56,27 +58,107 @@ function StepHeader({ label, title, sub }: { label: string; title: string; sub: 
   );
 }
 
+function generateOAuthUrl(platform: "meta" | "tiktok"): string {
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? (typeof window !== "undefined" ? window.location.origin : "");
+  if (platform === "meta") {
+    const params = new URLSearchParams({
+      client_id: process.env.NEXT_PUBLIC_META_APP_ID ?? "",
+      redirect_uri: `${appUrl}/api/auth/meta/callback`,
+      scope: "email,public_profile",
+      response_type: "code",
+    });
+    return `https://www.facebook.com/v18.0/dialog/oauth?${params.toString()}`;
+  } else {
+    const params = new URLSearchParams({
+      client_key: process.env.NEXT_PUBLIC_TIKTOK_CLIENT_KEY ?? "",
+      redirect_uri: `${appUrl}/api/auth/tiktok/callback`,
+      scope: "user.info.basic",
+      response_type: "code",
+    });
+    return `https://www.tiktok.com/v2/auth/authorize?${params.toString()}`;
+  }
+}
+
 export default function SignupPage() {
+  const searchParams = useSearchParams();
   const [step, setStep] = useState<Step>("method");
   const [platform, setPlatform] = useState<Platform | null>(null);
   const [gender, setGender] = useState("");
   const [ageRange, setAgeRange] = useState("");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
+  const [authError, setAuthError] = useState("");
+
+  // Handle OAuth callback — prefill from URL params
+  useEffect(() => {
+    const urlStep = searchParams.get("step");
+    const urlPlatform = searchParams.get("platform") as Platform | null;
+    const urlName = searchParams.get("name");
+    const urlEmail = searchParams.get("email");
+    const urlError = searchParams.get("auth_error");
+
+    if (urlError) {
+      setAuthError(urlError === "meta_denied" ? "Meta login was cancelled." : urlError === "tiktok_denied" ? "TikTok login was cancelled." : "Authentication failed. Please try again.");
+    }
+    if (urlStep === "details") {
+      if (urlPlatform) setPlatform(urlPlatform);
+      if (urlName) setName(urlName);
+      if (urlEmail) setEmail(urlEmail);
+      setStep("details");
+    }
+  }, [searchParams]);
+  const [referralInput, setReferralInput] = useState("");
+  const [referralStatus, setReferralStatus] = useState<"idle" | "valid" | "invalid">("idle");
+  const [referralReferrerName, setReferralReferrerName] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const canContinueDetails = gender !== "" && ageRange !== "" && name.trim() !== "";
 
-  const handleJoin = () => {
+  const handleReferralCheck = async (code: string) => {
+    const trimmed = code.trim().toUpperCase();
+    setReferralInput(trimmed);
+    if (!trimmed) { setReferralStatus("idle"); setReferralReferrerName(""); return; }
+    const referrer = await getProfileByReferralCode(trimmed);
+    if (referrer) {
+      setReferralStatus("valid");
+      setReferralReferrerName(referrer.name);
+    } else {
+      setReferralStatus("invalid");
+      setReferralReferrerName("");
+    }
+  };
+
+  const handleJoin = async () => {
+    setSubmitting(true);
     const initials = name.trim().split(" ").map((w) => w[0]?.toUpperCase() ?? "").join("").slice(0, 2) || "SC";
+    const referralCode = generateReferralCode(name);
+    const validReferral = referralStatus === "valid" ? referralInput.trim().toUpperCase() : undefined;
+
+    // Save to Supabase
+    const dbProfile = await createProfile({
+      name: name.trim(), email, initials, referral_code: referralCode,
+      referred_by: validReferral,
+      gender, age_range: ageRange, platform: platform ?? "email",
+    });
+
+    // Award LIS to referrer if a valid code was used
+    if (validReferral) {
+      await recordReferral(validReferral, name.trim(), email);
+    }
+
+    // Save to localStorage for local session
     const profile = {
       name: name.trim(), email, gender, ageRange, platform, initials,
       tier: "Scenthooders", lis: 0,
       joinDate: new Date().toISOString(),
-      referralCode: generateReferralCode(name),
+      referralCode,
+      referredBy: validReferral ?? null,
+      supabaseId: dbProfile?.id ?? null,
       recentActivity: [] as { action: string; points: number; date: string }[],
       votingQuality: 0, contentOutput: 0, peerEndorsement: 0, sessionAttendance: 0,
     };
     try { localStorage.setItem("scenthood_user", JSON.stringify(profile)); } catch {}
+    setSubmitting(false);
     setStep("done");
   };
 
@@ -116,7 +198,7 @@ export default function SignupPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-scent-noir/30 via-scent-noir/20 to-scent-noir/80" />
         <div className="relative z-10 h-full flex flex-col justify-between p-10">
           <div className="flex items-center gap-3">
-            <div className="logo-mark">S</div>
+            <Link href="/home" className="logo-mark">S</Link>
             <span className="eyebrow text-scent-gold">Brandstorm 2026</span>
           </div>
           <div>
@@ -133,7 +215,7 @@ export default function SignupPage() {
       <section className="flex flex-col min-h-screen">
         {/* Mobile header */}
         <div className="md:hidden border-b-2 border-scent-noir px-5 py-4 flex items-center gap-3">
-          <Link href="/" className="logo-mark">S</Link>
+          <Link href="/home" className="logo-mark">S</Link>
           <span className="eyebrow">Create Account</span>
         </div>
 
@@ -155,8 +237,14 @@ export default function SignupPage() {
                 <StepHeader label="Join SCENTHOOD" title="Create your account."
                   sub="Connect with your existing social accounts for a seamless experience — or sign up with email." />
 
+                {authError && (
+                  <div className="mb-4 border border-red-300 bg-red-50 text-red-700 text-[12px] px-4 py-3">
+                    {authError}
+                  </div>
+                )}
+
                 <div className="space-y-3 mb-6">
-                  <button onClick={() => { setPlatform("meta"); setStep("social"); }}
+                  <a href={generateOAuthUrl("meta")}
                     className="w-full flex items-center gap-4 py-4 px-5 border-2 border-scent-noir bg-scent-parchment hover:bg-scent-alabaster transition-all text-left">
                     <span className="text-[#0866FF]"><SocialIcon platform="meta" /></span>
                     <div className="flex-1">
@@ -164,9 +252,9 @@ export default function SignupPage() {
                       <div className="text-[11px] text-loreal-muted">Connect Instagram, Facebook & Threads in one tap</div>
                     </div>
                     <span className="text-scent-noir">→</span>
-                  </button>
+                  </a>
 
-                  <button onClick={() => { setPlatform("tiktok"); setStep("social"); }}
+                  <a href={generateOAuthUrl("tiktok")}
                     className="w-full flex items-center gap-4 py-4 px-5 border-2 border-scent-noir bg-scent-parchment hover:bg-scent-alabaster transition-all text-left">
                     <span className="text-scent-noir"><SocialIcon platform="tiktok" /></span>
                     <div className="flex-1">
@@ -174,7 +262,7 @@ export default function SignupPage() {
                       <div className="text-[11px] text-loreal-muted">Share your fragrance reviews to your feed</div>
                     </div>
                     <span className="text-scent-noir">→</span>
-                  </button>
+                  </a>
 
                   <div className="flex items-center gap-3 py-1">
                     <div className="flex-1 h-px bg-scent-noir/15" />
@@ -281,11 +369,30 @@ export default function SignupPage() {
                   <p className="text-[10px] text-loreal-muted mt-2">Used only to personalise your fragrance recommendations and community analytics.</p>
                 </div>
 
+                {/* Referral Code — optional */}
+                <div className="mb-8">
+                  <label className="eyebrow block mb-2">Referral Code <span className="text-loreal-muted normal-case tracking-normal font-normal">(optional)</span></label>
+                  <input
+                    type="text"
+                    placeholder="e.g. SCENT-LA-4821"
+                    value={referralInput}
+                    onChange={(e) => handleReferralCheck(e.target.value)}
+                    className={`w-full border-2 px-4 py-3 text-base bg-scent-parchment focus:outline-none font-medium placeholder:text-scent-noir/30 tracking-widest uppercase
+                      ${referralStatus === "valid" ? "border-green-600 bg-green-50" : referralStatus === "invalid" ? "border-red-400 bg-red-50" : "border-scent-noir"}`}
+                  />
+                  {referralStatus === "valid" && (
+                    <p className="text-[11px] text-green-700 mt-1.5 font-medium">✓ Valid code — referred by <span className="font-bold">{referralReferrerName}</span>. They&apos;ll earn +50 LIS when you join.</p>
+                  )}
+                  {referralStatus === "invalid" && (
+                    <p className="text-[11px] text-red-500 mt-1.5">✗ Code not found. Check it and try again, or leave it blank.</p>
+                  )}
+                </div>
+
                 <div className="flex gap-3">
                   <button onClick={() => setStep("social")} className="pill pill-parchment text-[12px] px-6 py-2.5 flex-shrink-0">Back</button>
-                  <button onClick={handleJoin} disabled={!canContinueDetails}
-                    className={`pill pill-gold text-[12px] flex-1 py-2.5 ${!canContinueDetails ? "opacity-30 cursor-not-allowed" : ""}`}>
-                    Join SCENTHOOD →
+                  <button onClick={handleJoin} disabled={!canContinueDetails || submitting}
+                    className={`pill pill-gold text-[12px] flex-1 py-2.5 ${(!canContinueDetails || submitting) ? "opacity-30 cursor-not-allowed" : ""}`}>
+                    {submitting ? "Joining…" : "Join SCENTHOOD →"}
                   </button>
                 </div>
               </motion.div>

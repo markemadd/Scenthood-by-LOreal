@@ -192,6 +192,7 @@ export default function TiersPage() {
                     <Link href="/signup" className="btn-gold text-xs py-2.5 w-full text-center block">
                       Join SCENTHOOD →
                     </Link>
+                    <div className="text-center text-[10px] text-loreal-muted">Requires purchase of at least one perfume bottle to enter this tier.</div>
                     <div className="text-center text-[10px] text-loreal-muted">Your membership card will be mailed within 14 days</div>
                   </div>
                 )}

@@ -53,7 +53,7 @@ function WeeklyChart() {
             <div key={w.week} className="flex-1 flex flex-col items-center gap-0.5 group cursor-default">
               <div className="hidden group-hover:flex flex-col items-center mb-1">
                 <div className="bg-scent-noir text-white text-xs px-2.5 py-1.5 whitespace-nowrap font-sans">
-                  {w.votes.toLocaleString()} votes · +{w.newMembers} members
+                  {w.votes.toLocaleString()} votes · {w.reviews.toLocaleString()} reviews
                 </div>
               </div>
               <div className="flex items-end gap-0.5 w-full">
@@ -172,9 +172,9 @@ function WorldMap() {
             {/* Tooltip */}
             {hovered === m.label && (
               <g>
-                <rect x={m.cx - 42} y={m.cy - 44} width={84} height={36} fill="#1A1A1A" rx="2" />
-                <text x={m.cx} y={m.cy - 27} textAnchor="middle" fill="white" fontSize="10" fontFamily="Inter, system-ui" fontWeight="600">{m.label}</text>
-                <text x={m.cx} y={m.cy - 14} textAnchor="middle" fill={heatColor(m.intensity)} fontSize="9" fontFamily="Inter, system-ui">{m.intensity}% demand intensity</text>
+                <rect x={m.cx - 72} y={m.cy - 48} width={144} height={40} fill="#1A1A1A" rx="3" />
+                <text x={m.cx} y={m.cy - 30} textAnchor="middle" fill="white" fontSize="10" fontFamily="Inter, system-ui" fontWeight="600">{m.label}</text>
+                <text x={m.cx} y={m.cy - 15} textAnchor="middle" fill={heatColor(m.intensity)} fontSize="9" fontFamily="Inter, system-ui">{m.intensity}% demand intensity</text>
               </g>
             )}
           </g>

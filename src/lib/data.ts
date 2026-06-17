@@ -217,6 +217,7 @@ export const tierData: TierConfig[] = [
     color: "#A48B75",
     perksHeadline: "Your membership, made tangible.",
     benefits: [
+      { label: "Everything in Friends" },
       { label: "Vote on accord creative directions" },
       { label: "Publish video & photo reviews (+100 LIS per video)" },
       { label: "Discover your Scent Identity" },
@@ -229,16 +230,16 @@ export const tierData: TierConfig[] = [
   },
   {
     name: "Scentmaker",
-    subtitle: "Top 10% CCS · Earned by Contribution",
+    subtitle: "Top 10% LIS · Earned by Contribution",
     ccsRange: "999+",
     target: "Year 1 Global Target: 50,000 Scentmakers",
     color: "#A8863A",
     perksHeadline: "Where contribution meets reward.",
     benefits: [
       { label: "Everything in Scenthooders" },
-      { label: "Revenue share: €0.50 / 1,000 views (up to €500/month)", exclusive: true },
       { label: "Early access: new launches 2 weeks before public", exclusive: true },
-      { label: "Quarterly 'Scentmaker Box' — curated samples & merch", physical: true, exclusive: true },
+      { label: "Provide certain fragrances to be reviewed", exclusive: true },
+      { label: "Quarterly 'Scentmaker Box' — curated samples & merchandise", physical: true, exclusive: true },
     ],
   },
   {
@@ -249,12 +250,10 @@ export const tierData: TierConfig[] = [
     color: "#7A6028",
     perksHeadline: "Co-create the future of fragrance.",
     benefits: [
-      { label: "Everything in Scentmaker" },
-      { label: "Co-create product briefs with Givaudan & IFF master perfumers", exclusive: true },
-      { label: "Attend the Annual Perfumer Summit (travel included)", physical: true, exclusive: true },
-      { label: "Name engraved on a limited numbered bottle edition", physical: true, exclusive: true },
+      { label: "Everything in Scentmakers" },
       { label: "Priority vote (2× weight) on all active briefs", exclusive: true },
       { label: "Direct line to L'Oréal Luxe creative team", exclusive: true },
+      { label: "Attend the Annual Perfumer Summit (travel included)", physical: true, exclusive: true },
       { label: "Get to edit one perfume for your own use, once a year", physical: true, exclusive: true },
     ],
   },
